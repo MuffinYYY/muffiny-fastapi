@@ -9,7 +9,7 @@ router = APIRouter(
 ) #Create API router that allows it to split it between different files
 
 #Method for liking a post
-@router.get("/",status_code=status.HTTP_201_CREATED)
+@router.post("/",status_code=status.HTTP_201_CREATED)
 def vote_post(vote: schemas.Vote ,current_user : int = Depends(oath2.get_current_user), db: Session = Depends(get_db)):
 
     vote_query = db.query(models.Votes).filter(models.Votes.post_id == vote.post_id, models.Votes.user_id == current_user.id) #This will query the Vote table and check if this specific user, that's logged in has liked post
