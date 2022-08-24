@@ -16,7 +16,7 @@ save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth"
 
 #This function desplays all data that is in save_amogus list
 @router.get("/all", response_model= List[schemas.PostOut]) #List[schemas.PostOut] we are specify that we want respone model to be a list and each element should be validated as our schema
-async def get_all_amogus(db: Session = Depends(get_db), current_user : int = Depends(oath2.get_current_user), limit: int = 10, skip: int = 0, search : Optional[str] = ""): #Limit is query parameter, so we can limit how many rows we get in our response, by default it's 10
+async def get_all_amogus(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search : Optional[str] = ""): #Limit is query parameter, so we can limit how many rows we get in our response, by default it's 10
     #posts = db.query(models.PostSMTH).filter(models.PostSMTH.sussy.contains(search)).limit(limit).offset(skip).all()
     #Models.post will allow us to access that model and .all() will get all entries | .limit() will return limited amount of posts based on some criteria | Skip will skip the first posts by amount provided in skip variable
     #.filter(models.PostSMTH.sussy.contains(search)) will search our row's based on criteria that they have int title (sussy) some string search IMPORTANT: serach is case sensetive
