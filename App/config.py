@@ -13,9 +13,14 @@ class Setting(BaseSettings):
     secret_key : str
     algorithm : str
     access_token_expire_time_minutes: int
+
+    authjwt_token_location : set = {"cookies"}  # Configure application to store and get JWT from cookies
+    authjwt_cookie_csrf_protect: bool  # Disable CSRF Protection for this example. default is True
+    authjwt_secret_key: str 
+    authjwt_cookie_samesite: str = 'none' #Needed to set cookies in browser
+    authjwt_cookie_secure : bool = "true" #Needed to set cookies in browser
     class Config:
         env_file = ".env"
 
 
 settings = Setting()
-print(settings.database_username)

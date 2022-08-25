@@ -5,6 +5,9 @@ from typing import Optional, List
 from sqlalchemy.orm import Session
 from ..database import get_db #Import from current directory
 from sqlalchemy import func
+from fastapi.responses import JSONResponse
+from fastapi_jwt_auth import AuthJWT
+from fastapi_jwt_auth.exceptions import AuthJWTException
 
 router = APIRouter(
     prefix="/posts", #Every time insted of routing /posts/something, we just leave /somtehing and /posts will get added 
@@ -16,12 +19,14 @@ save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth"
 
 #This function desplays all data that is in save_amogus list
 @router.get("/all", response_model= List[schemas.PostOut]) #List[schemas.PostOut] we are specify that we want respone model to be a list and each element should be validated as our schema
-async def get_all_amogus(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search : Optional[str] = ""): #Limit is query parameter, so we can limit how many rows we get in our response, by default it's 10
+async def get_all_amogus(db: Session = Depends(get_db), limit: int = 10, skip: int = 0, search : Optional[str] = "", Authorize: AuthJWT = Depends()): #Limit is query parameter, so we can limit how many rows we get in our response, by default it's 10
     #posts = db.query(models.PostSMTH).filter(models.PostSMTH.sussy.contains(search)).limit(limit).offset(skip).all()
     #Models.post will allow us to access that model and .all() will get all entries | .limit() will return limited amount of posts based on some criteria | Skip will skip the first posts by amount provided in skip variable
     #.filter(models.PostSMTH.sussy.contains(search)) will search our row's based on criteria that they have int title (sussy) some string search IMPORTANT: serach is case sensetive
     #posts_based_on_user = db.query(models.PostSMTH).filter(models.PostSMTH.user_id==current_user.id).all() #This will require us to be logged in and we'll see only logged in user's posts
     #print(current_user.email) #This returns current user's email from Users table
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
     results = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.sussy.contains(search)).limit(limit).offset(skip).all()
     #We are quering amogus_table (post table) and joining it together with amogus_votes (votes) table based on if post id's match in both tables | Isouter defines that the join is LEFT OUTTER JOIN, by default it's LEFT INNER JOIN, then we are grouping together based on post_id and counting them
     #What filter does is explained in line 20
@@ -36,11 +41,14 @@ async def get_all_amogus(db: Session = Depends(get_db), limit: int = 10, skip: i
 
 #This function can post something to save_amogus list
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.ResponsePost) #the status_code is the default when function succesfully completes it's task
-def post_something(payLoad: schemas.Post, db: Session = Depends(get_db), current_user : int = Depends(oath2.get_current_user)) : #We are putting into payLoad object class Post, which check the variables
+def post_something(payLoad: schemas.Post, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()) : #We are putting into payLoad object class Post, which check the variables
     #Every time someone tries to access resource that requires them to be logged in we have to expect that they'll provide access token which has login info about the user, To create post there is now a dependency that requires users to be logged in
     #Depends(oath2.get_current_user) will return id
     #print(current_user.id)
-    new_post_amogus = models.PostSMTH(owner_id = current_user.id, **payLoad.dict())#Creating new post **payLoad(dict) is a kwarg when we can pass multiple arguments withouth writing each time title = payLoad.Something, database requires that user_id field is set, so this ensures that the user_id will be set automaticly without typing it in body
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+
+    new_post_amogus = models.PostSMTH(owner_id = current_user, **payLoad.dict())#Creating new post **payLoad(dict) is a kwarg when we can pass multiple arguments withouth writing each time title = payLoad.Something, database requires that user_id field is set, so this ensures that the user_id will be set automaticly without typing it in body
     db.add(new_post_amogus) #Adding it to database
     db.commit() #Commiting changes to DataBase
     db.refresh(new_post_amogus) #Retrieve that date we just created and store it in variable new_post_amogus
@@ -114,13 +122,15 @@ def get_Amogus(id : int, db: Session = Depends(get_db)): # the :int will validat
 
 #This function can delete data based on it's id code
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-def delete_amogus (id : int, db: Session = Depends(get_db), current_user : int = Depends(oath2.get_current_user)):
+def delete_amogus (id : int, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()):
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
 
     post_query = db.query(models.PostSMTH).filter(models.PostSMTH.id==id)#Query the data based on id
     post_get_first = post_query.first() #Put into variable the queried row
     if not post_get_first: #If the row couldn't be found, that means that post with id was deleted or doesn't exist
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"Post with id {id} not found or was already deleted") #raise exception
-    if post_get_first.owner_id != current_user.id: #If the user_id in queried row isn't equall to current_user id that's logged in, raise error that action is forbidden
+    if post_get_first.owner_id != current_user: #If the user_id in queried row isn't equall to current_user id that's logged in, raise error that action is forbidden
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to delete")
     deleted_post = post_query.delete(synchronize_session=False) #delete the qureyied post
     db.commit() #Commit changes to database
@@ -159,13 +169,15 @@ def delete_amogus (id : int, db: Session = Depends(get_db), current_user : int =
 
 #This function can update data based on id
 @router.put("/{id}", status_code=status.HTTP_202_ACCEPTED, response_model= schemas.ResponsePost)
-def update_amogus (id : int, payLoad:schemas.Post, db: Session = Depends(get_db), current_user : int = Depends(oath2.get_current_user)): #Previously is explanation what this does
-    
+def update_amogus (id : int, payLoad:schemas.Post, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()): #Previously is explanation what this does
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+
     update_post_query = db.query(models.PostSMTH).filter(models.PostSMTH.id==id) #Query all the rows and find where the inputed id is the same as id provided in databse
     update_post_get_first = update_post_query.first() #Store this row into a new variable
     if not update_post_get_first: #If we couldn't find row who's id's match
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"Post not found") #raise exception
-    if update_post_get_first.owner_id != current_user.id: #Check if user_id asociated with post in our database is the same id, as current_user id
+    if update_post_get_first.owner_id != current_user: #Check if user_id asociated with post in our database is the same id, as current_user id
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to perform this action")
     update_post_query.update({**payLoad.dict()}, synchronize_session=False) #Update data
     db.commit()#Commit changes to database
