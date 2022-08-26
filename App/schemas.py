@@ -7,7 +7,7 @@ from typing import Optional
 #When we post something we need to pass into postman body the data as defined by our schema, but if there is some automatic data it can be passed automaticly withouth schema, such as id and user_id
 
 class PostBase(BaseModel):
-    sussy : str
+    Title : str
     baka : str
     ajusnevarat : int
 

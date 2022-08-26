@@ -8,7 +8,6 @@ export default function AllPosts(){
     const [error, setError] = useState(null)
   
     const url = `http://127.0.0.1:8000`
-
     useEffect(() => {
           console.log("Re rendering page")
             fetch(`${url}/posts/all`, {

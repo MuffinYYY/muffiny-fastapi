@@ -18,6 +18,17 @@ router = APIRouter(
 def get_config():
     return Setting()
 
+denylist = set()
+
+# For this example, we are just checking if the tokens jti
+# (unique identifier) is in the denylist set. This could
+# be made more complex, for example storing the token in Redis
+# with the value true if revoked and false if not revoked
+@AuthJWT.token_in_denylist_loader
+def check_if_token_in_denylist(decrypted_token):
+    jti = decrypted_token['jti']
+    return jti in denylist
+
 
 @router.post('/login')
 def login(loginpost: schemas.UserLogin, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
@@ -36,6 +47,23 @@ def login(loginpost: schemas.UserLogin, Authorize: AuthJWT = Depends(), db: Sess
     Authorize.set_access_cookies(access_token)
     Authorize.set_refresh_cookies(refresh_token)
     return {"access_token": access_token, "refresh_token": refresh_token}
+
+@router.delete('/logout')
+def logout(Authorize: AuthJWT = Depends()):
+    """
+    Because the JWT are stored in an httponly cookie now, we cannot
+    log the user out by simply deleting the cookie in the frontend.
+    We need the backend to send us a response to delete the cookies.
+    """
+    #Revoke access token
+    Authorize.jwt_required()    
+    jti = Authorize.get_raw_jwt()['jti']
+    denylist.add(jti)
+
+    #Unset cookie
+    Authorize.unset_jwt_cookies()
+    return {"msg":"Successfully logout"}
+
 
 @router.get('/usertest')
 def user(Authorize: AuthJWT = Depends()):

@@ -12,7 +12,7 @@ class PostSMTH(Base):
     __tablename__ = "amogus_table" #Define class name
 
     id = Column(Integer, primary_key = True, nullable = False)
-    sussy = Column(String, nullable = False)
+    Title = Column(String, nullable = False)
     baka = Column(String, nullable = False)
     ajusnevarat = Column(Integer, nullable = False)
     published = Column(Boolean, nullable = False, server_default = 'true')

@@ -27,7 +27,7 @@ async def get_all_amogus(db: Session = Depends(get_db), limit: int = 10, skip: i
     #print(current_user.email) #This returns current user's email from Users table
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
-    results = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.sussy.contains(search)).limit(limit).offset(skip).all()
+    results = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.Title.contains(search)).limit(limit).offset(skip).all()
     #We are quering amogus_table (post table) and joining it together with amogus_votes (votes) table based on if post id's match in both tables | Isouter defines that the join is LEFT OUTTER JOIN, by default it's LEFT INNER JOIN, then we are grouping together based on post_id and counting them
     #What filter does is explained in line 20
     return results
