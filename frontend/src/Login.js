@@ -5,12 +5,15 @@ import { useState, useEffect } from "react";
 import { serialize } from 'object-to-formdata'; //Library that simplifies serializng data to form-data
 import FormElement from "./Components"
 import {Link} from 'react-router-dom'
+import {cookies} from "./App"
+import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
+import { useLocation, useNavigate } from "react-router";
 import { UserContext } from "./App";
-
 
 export default function LoginHandle() {
 
+  const { user, setUser } = useContext(UserContext);
 
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
@@ -18,8 +21,6 @@ export default function LoginHandle() {
 
   const url = `http://127.0.0.1:8000`
 
-  const { user, setUser } = useContext(UserContext);
-  console.log("llogin")
   //State that tracks input field
   const [forms, setFormData] = useState({
     email: "",
@@ -41,7 +42,7 @@ export default function LoginHandle() {
 
   //send log in info to API
   useEffect(() => {
-      if(clicked && user.loggedIn === false){
+      if(clicked ){
         console.log("Re rendering page")
           fetch(`${url}/login`, {
             method: 'POST',    
@@ -57,7 +58,9 @@ export default function LoginHandle() {
               setClicked(false)
             }if(response.status === 200){
               console.log("HTTP response code: " + response.status)
+              cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
               setUser({ loggedIn: true });
+              
             }
             return response.json()
           })

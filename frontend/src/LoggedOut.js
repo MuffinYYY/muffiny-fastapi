@@ -1,9 +1,6 @@
 import React from 'react';
-import Button from 'react-bootstrap/Button';
 import { useState, useEffect } from "react";
-import { serialize } from 'object-to-formdata'; //Library that simplifies serializng data to form-data
-import FormElement from "./Components"
-import {Link} from 'react-router-dom'
+import {cookies} from "./App"
 
 export default function LoggedOut(){
   const [data, setData] = useState(null)
@@ -30,6 +27,7 @@ export default function LoggedOut(){
           if(response.status !='200')
             setClicked(false)
           console.log("HTTP response code: " + response.status)
+          cookies.remove('LoggedIn', { path: '/' });
         })
         .then((actualData) => {
             setData(actualData)
