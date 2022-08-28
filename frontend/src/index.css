@@ -1,19 +1,39 @@
-.col{
-    background-color: coral;
-}
-
-.App{
-    float: left;
-}
-
-.container{
-    margin: 20px;
-    max-width: 300px;
-    position: absolute;
-  top: 8px;
-  right: 16px;
-  font-size: 18px;
-}
 body{
-    background-color: coral;
+    background: rgb(2,0,36);
+    background: linear-gradient(90deg, rgba(2,0,36,1) 0%, rgba(65,9,121,1) 42%, rgba(0,212,255,1) 100%);
+}
+
+.login-container, .create-container{
+    margin-top: 200px;
+    max-width: 300px;
+    text-align: center;
+}
+.post-card{
+    max-width: 30rem;
+    margin-top: 20px;
+    border-style: ridge;
+    border-radius: 2rem;
+    text-align: justify;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+.post-card-title {
+    text-align: center;
+}
+.card-img{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 300px;
+    width: 300px;
+    border-style: inset;
+}
+.danger-alert{
+    color: red;
+    text-align: center;
+}
+
+.test{
+   border-color: red;
 }

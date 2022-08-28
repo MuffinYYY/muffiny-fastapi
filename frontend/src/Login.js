@@ -8,8 +8,9 @@ import {Link} from 'react-router-dom'
 import {cookies} from "./App"
 import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
-import { useLocation, useNavigate } from "react-router";
 import { UserContext } from "./App";
+import Container from 'react-bootstrap/esm/Container';
+import Alert from 'react-bootstrap/Alert';
 
 export default function LoginHandle() {
 
@@ -18,6 +19,7 @@ export default function LoginHandle() {
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [clicked, setClicked] = useState(false) //State that tracks Log in button state, whether it's clicked or not
+  const [status, setStatus] = useState(null)
 
   const url = `http://127.0.0.1:8000`
 
@@ -57,11 +59,11 @@ export default function LoginHandle() {
             if(response.status !=='200'){
               setClicked(false)
             }if(response.status === 200){
-              console.log("HTTP response code: " + response.status)
               cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
               setUser({ loggedIn: true });
               
             }
+            setStatus(response.status)
             return response.json()
           })
           .then((actualData) => {
@@ -85,8 +87,12 @@ export default function LoginHandle() {
   if(data !== null){
     console.log(data.access_token)
   }
+
+  console.log(status)
+
   //Render this on screen
   return (
+    <Container className='login-container'>
       <Form onSubmit={handleSubmit}>
         <FormElement
           handleOnChange={handleChange}
@@ -94,6 +100,7 @@ export default function LoginHandle() {
           type="email"
           name="email"
           controlId="formBasicEmail"
+          alert = {status === 403 ? true : false}
         />
         <FormElement
           handleOnChange={handleChange}
@@ -101,6 +108,7 @@ export default function LoginHandle() {
           type="password"
           name="password"
           controlId="formBasicPassword"
+          alert = {status === 403 ? true : false}
         />
         <Button 
         variant="primary"
@@ -111,9 +119,8 @@ export default function LoginHandle() {
         <Link to='/CreateAccount'>
           <Button>Create account</Button>
         </Link>
-        <Link to='/logout'>
-          <Button>LogOut</Button>
-        </Link>
+        {status === 403 ? <p className='danger-alert'>Invalid credentials</p>: ""}
       </Form>
+    </Container>
   );
 }

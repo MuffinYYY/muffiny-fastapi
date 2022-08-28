@@ -1,6 +1,8 @@
 import React from 'react';
 import { useState, useEffect } from "react";
 import {cookies} from "./App"
+import {Link} from 'react-router-dom'
+import { Navigate, Outlet } from "react-router-dom";
 
 export default function LoggedOut(){
   const [data, setData] = useState(null)
@@ -41,7 +43,8 @@ export default function LoggedOut(){
 }, [])
 
 return(
-
-    <h1>Logged out</h1>
+  <>
+    {cookies.get('LoggedIn') ? "" : <Navigate to="/" replace />}
+  </>
 )
 }
