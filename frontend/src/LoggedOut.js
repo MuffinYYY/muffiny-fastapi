@@ -1,10 +1,13 @@
 import React from 'react';
 import { useState, useEffect } from "react";
 import {cookies} from "./App"
-import {Link} from 'react-router-dom'
-import { Navigate, Outlet } from "react-router-dom";
+import { Navigate } from "react-router-dom";
+import { useContext } from "react";
+import { UserContext } from "./App";
 
 export default function LoggedOut(){
+  
+  const { user, setUser } = useContext(UserContext);
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [clicked, setClicked] = useState(false) //State that tracks Log in button state, whether it's clicked or not
@@ -14,8 +17,8 @@ export default function LoggedOut(){
   const url = `http://127.0.0.1:8000`
     
   //send logout to API
+  
   useEffect(() => {
-      console.log("Re rendering page")
         fetch(`${url}/logout`, {
           method: 'DELETE',    
           headers: {
@@ -26,10 +29,9 @@ export default function LoggedOut(){
         })
         .then((response) => {
           response.json()
-          if(response.status !='200')
-            setClicked(false)
-          console.log("HTTP response code: " + response.status)
+          console.log(response.status)
           cookies.remove('LoggedIn', { path: '/' });
+          setUser({ loggedIn: cookies.get('LoggedIn') });
         })
         .then((actualData) => {
             setData(actualData)

@@ -37,3 +37,16 @@ body{
 .test{
    border-color: red;
 }
+.navbar-brand{
+    margin-left: 100px;
+}
+
+.post-area{
+    max-width: 500px;
+}
+
+.text-area-title{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    max-height: 200px;
+}

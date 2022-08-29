@@ -26,6 +26,18 @@ def create_user_amogus(payLoad: schemas.UserCreate, db: Session = Depends(get_db
     else:
         raise HTTPException(status.HTTP_409_CONFLICT, detail=f"Account {payLoad.email} already exists")
         
+#Get current user that's logged in
+@router.get("/current", response_model= schemas.ResponseUserCreat)
+def get_current_user(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+
+    get_logged_user = db.query(models.User).filter(models.User.id==current_user).first()
+    return get_logged_user
+
+
+#Get user based on id
 @router.get("/{id}", response_model= schemas.ResponseUserCreat)
 def get_user_by_id(id : int, db: Session = Depends(get_db)):
     

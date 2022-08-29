@@ -6,11 +6,9 @@ import { serialize } from 'object-to-formdata'; //Library that simplifies serial
 import FormElement from "./Components"
 import {Link} from 'react-router-dom'
 import {cookies} from "./App"
-import { Navigate, Outlet } from "react-router-dom";
 import { useContext } from "react";
 import { UserContext } from "./App";
 import Container from 'react-bootstrap/esm/Container';
-import Alert from 'react-bootstrap/Alert';
 
 export default function LoginHandle() {
 
@@ -83,12 +81,6 @@ export default function LoginHandle() {
     console.log("Handeling submit")
     setClicked(true)
   }
-
-  if(data !== null){
-    console.log(data.access_token)
-  }
-
-  console.log(status)
 
   //Render this on screen
   return (

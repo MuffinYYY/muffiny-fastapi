@@ -1,20 +1,15 @@
 import React from "react";
 import { useState, useEffect } from "react";
-import Posts from "./Posts"
-import {Link} from 'react-router-dom'
-import { Navigate, Outlet } from "react-router-dom";
 
-export default function AllPosts(){
-    const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
+export default function GetUser(){
+
+    const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
     const [error, setError] = useState(null)
     
     const url = `http://127.0.0.1:8000`
 
-    console.log(data)
-
     useEffect(() => {
-          console.log("Re rendering page")
-            fetch(`${url}/posts/all`, {
+            fetch(`${url}/users/current`, {
                 credentials: 'include'}
             )
             .then((response) => {
@@ -31,19 +26,11 @@ export default function AllPosts(){
             })
     }, [])
 
-        const newArray = data.map(item =>{
-            console.log(item.PostSMTH.Title)
-        return (
-            <Posts
-            key = {item.PostSMTH.id}
-            title = {item.PostSMTH.Title}
-            description = {item.PostSMTH.baka}
-            />
-        )
-        })
+    console.log(data)
     return(
         <div>
-            {newArray}
+        <h1>{data.email}</h1>
+        <h1>{data.created_at}</h1>
         </div>
     )
 }
