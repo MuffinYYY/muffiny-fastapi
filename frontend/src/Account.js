@@ -1,18 +1,30 @@
 import React from "react";
 import { useState, useEffect } from "react";
+import Posts from './Posts'
+import Button from 'react-bootstrap/Button';
+import {Link} from 'react-router-dom'
+import Delete from "./delete";
+import { Navigate } from "react-router-dom";
 
 export default function GetUser(){
 
-    const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
+    const [data, setData] = useState([{'id': ''}])
     const [error, setError] = useState(null)
-    
+    const [id, setId] = useState(null)
+    const [response, setResponse] = useState(null)
+
     const url = `http://127.0.0.1:8000`
 
     useEffect(() => {
-            fetch(`${url}/users/current`, {
-                credentials: 'include'}
-            )
+            fetch(`${url}/posts/current`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            })
             .then((response) => {
+                setResponse(response.status)
                 return response.json()
             })
             .then((actualData) => {
@@ -25,12 +37,47 @@ export default function GetUser(){
                 console.log(err.message)
             })
     }, [])
+    if(response === 422){
+        return(
+            <Navigate to="/login" replace />
+        )
+    }
 
-    console.log(data)
+    const newArray = data.map(item =>{
+        console.log(item)
+        return (
+            <Posts
+            key = {item.id}
+            title = {item.Title}
+            baka = {item.baka}
+            delete = {
+                <Link 
+                to={"/delete"}
+                state={{postId: item.id}}
+                >
+                    <Button variant="danger" >Delete post</Button>
+                </Link>
+            }
+            edit = {
+                <Link
+                to={"/edit"}
+                state={{
+                    postId: item.id,
+                    title: item.Title,
+                    baka: item.baka,
+                    ajusnevarat: item.ajusnevarat
+                    }}
+                >
+                    <Button variant="info" >Edit post</Button>
+                </Link>
+            }
+            />
+        )
+        })
+
     return(
         <div>
-        <h1>{data.email}</h1>
-        <h1>{data.created_at}</h1>
+            {newArray}
         </div>
     )
 }

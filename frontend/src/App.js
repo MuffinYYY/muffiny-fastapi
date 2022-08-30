@@ -13,6 +13,8 @@ import { createContext } from "react";
 import Home from './Home';
 import NavbarCustom from './Navbar'
 import GetUser from "./Account";
+import Delete from "./delete";
+import Edit from "./Edit"
 
 export const cookies = new Cookies();
 
@@ -36,6 +38,8 @@ export default function App(){
                 <Route path="/PostSomething" element={cookies.get('LoggedIn') ?  <PostSomething/> :  <Navigate to="/login" replace />}/>
                 <Route path="/logout" element={<LoggedOut /> } />
                 <Route path="/Account" element={cookies.get('LoggedIn') ?  <GetUser/> :  <Navigate to="/login" replace />} />
+                <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
+                <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
             </Routes>
         </Container>
     </div>

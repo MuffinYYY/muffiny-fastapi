@@ -31,7 +31,7 @@ export default function AllPosts(){
             <Posts
             key = {item.PostSMTH.id}
             title = {item.PostSMTH.Title}
-            description = {item.PostSMTH.baka}
+            baka = {item.PostSMTH.baka}
             owner = {item.PostSMTH.owner.email}
             likes= {item.likes}
             />

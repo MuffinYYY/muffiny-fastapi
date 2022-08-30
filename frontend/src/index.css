@@ -50,3 +50,7 @@ body{
     margin-bottom: 20px;
     max-height: 200px;
 }
+
+.text-area-description{
+    max-height: 200px;
+}

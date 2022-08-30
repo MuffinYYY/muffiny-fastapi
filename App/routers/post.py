@@ -38,6 +38,18 @@ async def get_all_amogus(db: Session = Depends(get_db), limit: int = 9999, skip:
     return {"data": records} #Return all the posts from DB, prevousvly we used save_amogus instead of records to get everything in list
 """
 
+#This function return current user's posts
+@router.get("/current")
+def get_current_user_post(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+
+    get_logged_user_post = db.query(models.PostSMTH).filter(models.PostSMTH.owner_id==current_user).all()
+    print(current_user)
+    return get_logged_user_post
+
+
 #This function can post something to save_amogus list
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model= schemas.ResponsePost) #the status_code is the default when function succesfully completes it's task
 def post_something(payLoad: schemas.Post, db: Session = Depends(get_db), Authorize: AuthJWT = Depends()) : #We are putting into payLoad object class Post, which check the variables
