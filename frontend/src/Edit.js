@@ -1,11 +1,6 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom';
-import {Link} from 'react-router-dom'
-import { Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, Navigate } from 'react-router-dom';
 import Posts from './Posts'
-import Form from 'react-bootstrap/Form';
-import Container from 'react-bootstrap/esm/Container';
 import Button from 'react-bootstrap/Button';
 
 export default function Edit(){
@@ -18,18 +13,12 @@ export default function Edit(){
     const [error, setError] = useState(null)
     const [response, setResponse] = useState({})
 
-    var id
-    
-    if(location.state === null){
-       <h1>hi</h1>
-    }else{
-        id = location.state.postId
-    }
+    var id = location.state.postId
 
     const [forms, setFormData] = useState({
-        Title: `${state.title}`,
-        baka: `${state.baka}`,
-        ajusnevarat: `${state.ajusnevarat}`
+        Title: state !== null ?`${state.title}` : "",
+        baka: state !== null ? `${state.baka}`: "",
+        ajusnevarat: state !== null ? `${state.ajusnevarat}` : ""
       })
     
     //Function that logs inputs into log in form fields
@@ -40,7 +29,6 @@ export default function Edit(){
             [name] : value
         }))
     }
-    console.log(forms)
 
     function handleSubmit(event) {
         event.preventDefault()
@@ -72,8 +60,8 @@ export default function Edit(){
         }
     }, [clicked])
 
-  console.log(response.status)
     return(
+        state !== null ? 
         <Posts
         key = {state.postId}
         title = {state.title}
@@ -83,6 +71,7 @@ export default function Edit(){
         edit = {
             <Button variant="info" onClick={handleSubmit}>Edit post</Button>
         }
-        />
+        /> :
+        <Navigate to="/account" replace />
     )
 }

@@ -2,9 +2,7 @@ import React from "react";
 import { useState, useEffect } from "react";
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
-import {Link} from 'react-router-dom'
-import Delete from "./delete";
-import { Navigate } from "react-router-dom";
+import {Link, Navigate } from 'react-router-dom'
 
 export default function GetUser(){
 
@@ -44,7 +42,6 @@ export default function GetUser(){
     }
 
     const newArray = data.map(item =>{
-        console.log(item)
         return (
             <Posts
             key = {item.id}

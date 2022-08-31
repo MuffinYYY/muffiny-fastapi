@@ -97,8 +97,18 @@ def find_amogs_index (id : int):
             return i
 """
 
+#This is function to get all posts from one user based on users id
+@router.get("/{ownerid}")
+def get_current_user_post(ownerid : int, db: Session = Depends(get_db)):
+
+    get_logged_user_post = db.query(models.PostSMTH).filter(models.PostSMTH.owner_id==ownerid).all()
+    if not get_logged_user_post:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Not selected user") #raise exception
+    return get_logged_user_post
+
+
 #This is function to get and display single data based on id 
-@router.get("/{id}", response_model= schemas.PostOut) #Have to be careful because it is a string but needs to be a int| Respone model return our specified pydantic model 
+@router.get("/single/{id}", response_model= schemas.PostOut) #Have to be careful because it is a string but needs to be a int| Respone model return our specified pydantic model 
 def get_Amogus(id : int, db: Session = Depends(get_db)): # the :int will validate that the inserted variable (id) is a int and if it isn't it'll try to convert it to it
 
     #get_post_byID_query = db.query(models.PostSMTH).filter(models.PostSMTH.id==id) #.all() at the end would also work, but it would continou searching for another post with unique id and fast database resources\

@@ -1,13 +1,10 @@
-import React from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState, useEffect } from "react";
 import { serialize } from 'object-to-formdata'; //Library that simplifies serializng data to form-data
 import FormElement from "./Components"
 import {Link} from 'react-router-dom'
-import {cookies} from "./App"
-import { useContext } from "react";
-import { UserContext } from "./App";
+import {cookies, UserContext} from "./App"
 import Container from 'react-bootstrap/esm/Container';
 
 export default function LoginHandle() {

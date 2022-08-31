@@ -1,8 +1,6 @@
-import React from 'react';
-import { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from 'react';
 import {cookies} from "./App"
 import { Navigate } from "react-router-dom";
-import { useContext } from "react";
 import { UserContext } from "./App";
 
 export default function LoggedOut(){

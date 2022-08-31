@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/esm/Container';
 import Button from 'react-bootstrap/Button';
@@ -47,6 +46,7 @@ export default function PostSomething(){
             })
             .then((response) => {
             console.log(response.status)
+            setClicked(false)
             return response.json()
             })
             .then((actualData) => {

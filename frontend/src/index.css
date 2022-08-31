@@ -54,3 +54,7 @@ body{
 .text-area-description{
     max-height: 200px;
 }
+
+.owner-email{
+    cursor: pointer;
+}

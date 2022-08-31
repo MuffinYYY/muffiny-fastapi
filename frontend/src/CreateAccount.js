@@ -1,8 +1,7 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import FormElement from "./Components"
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { useState, useEffect } from "react";
 import Container from "react-bootstrap/esm/Container";
 
 export default function CreateAccount(){

@@ -1,5 +1,4 @@
-import React from "react";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import Posts from "./Posts"
 
 export default function AllPosts(){
@@ -30,10 +29,12 @@ export default function AllPosts(){
         return (
             <Posts
             key = {item.PostSMTH.id}
+            ownerid = {item.PostSMTH.owner_id}
             title = {item.PostSMTH.Title}
             baka = {item.PostSMTH.baka}
             owner = {item.PostSMTH.owner.email}
             likes= {item.likes}
+            state={{ownerId: item.PostSMTH.owner_id}}
             />
         )
         })

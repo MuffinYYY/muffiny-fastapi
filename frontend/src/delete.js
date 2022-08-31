@@ -1,8 +1,5 @@
-import React from "react";
-import { useState, useEffect } from "react";
-import { useLocation } from 'react-router-dom';
-import {Link} from 'react-router-dom'
-import { Navigate } from "react-router-dom";
+import React, { useState, useEffect } from "react";
+import { useLocation, Navigate } from 'react-router-dom';
 
 export default function Delete(){
 
@@ -42,7 +39,6 @@ export default function Delete(){
 
           
   }, [])
-  console.log(response.status)
   if(response.status === 204 || response.status === 404){
       return(
           <Navigate to="/account" replace />

@@ -1,10 +1,15 @@
 import React from "react";
 import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
-import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
+import { useNavigate } from "react-router-dom";
 
 export default function Posts(props){
+
+    let navigate = useNavigate(); 
+    const routeChange = () =>{ 
+      navigate(`/user`, {state:props.ownerid});
+    }
 
     return(
         <Container className="post-card">
@@ -29,7 +34,10 @@ export default function Posts(props){
             />:
             <p>{props.baka}</p>}
 
-            <h5>{props.owner}| Likes: {props.likes}</h5>
+            <h5 
+                className="owner-email" 
+                onClick={routeChange}
+            >{props.owner}| Likes: {props.likes}</h5>
             <div>
                 {props.delete}
                 {props.edit}
