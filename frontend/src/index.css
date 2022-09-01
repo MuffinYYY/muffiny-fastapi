@@ -55,6 +55,22 @@ body{
     max-height: 200px;
 }
 
+.user-likes{
+    display: flex;
+    flex-direction: row;
+}
+.user-likes > h5 {
+    margin-left: 10px;
+    margin-right: 10px;
+}
+
 .owner-email{
+    cursor: pointer;
+}
+
+.heart-icon{
+    width: 20px;
+    height: 20px;
+    margin-top: 4px;
     cursor: pointer;
 }

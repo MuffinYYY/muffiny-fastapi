@@ -14,6 +14,7 @@ import GetUser from "./Account";
 import Delete from "./delete";
 import Edit from "./Edit"
 import ClickedUser from "./UserClicked";
+import Upload from "./upload";
 
 export const cookies = new Cookies();
 
@@ -40,6 +41,7 @@ export default function App(){
                 <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
                 <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
                 <Route path="/user" element={<ClickedUser /> } />
+                <Route path="/upload" element={<Upload /> } />
             </Routes>
         </Container>
     </div>

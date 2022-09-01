@@ -4,7 +4,7 @@ import { useLocation, Navigate } from 'react-router-dom';
 
 export default function ClickedUser(){
 
-    const [data, setData] = useState([{'id': ''}])
+    const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
     const [error, setError] = useState(null)
     const [response, setResponse] = useState({})
 
@@ -34,19 +34,22 @@ export default function ClickedUser(){
             setData(null)
             console.log(err.message)
         })
-}, [])
+    }, [])
 
-    if(response == 400){
+    if(response === 400){
         return(
             <Navigate to="/" replace />
         )
     }
     const newArray = data.map(item =>{
+        console.log(item)
         return (
             <Posts
-            key = {item.id}
-            title = {item.Title}
-            baka = {item.baka}
+            key = {item.PostSMTH.id}
+            postid = {item.PostSMTH.id}
+            title = {item.PostSMTH.Title}
+            baka = {item.PostSMTH.baka}
+            likes = {item.likes}
             />
         )
         })

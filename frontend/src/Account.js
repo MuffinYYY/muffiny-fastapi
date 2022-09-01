@@ -6,7 +6,7 @@ import {Link, Navigate } from 'react-router-dom'
 
 export default function GetUser(){
 
-    const [data, setData] = useState([{'id': ''}])
+    const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
     const [error, setError] = useState(null)
     const [id, setId] = useState(null)
     const [response, setResponse] = useState(null)
@@ -40,17 +40,19 @@ export default function GetUser(){
             <Navigate to="/login" replace />
         )
     }
-
     const newArray = data.map(item =>{
+        console.log(item)
         return (
             <Posts
-            key = {item.id}
-            title = {item.Title}
-            baka = {item.baka}
+            key = {item.PostSMTH.id}
+            postid = {item.PostSMTH.id}
+            title = {item.PostSMTH.Title}
+            baka = {item.PostSMTH.baka}
+            likes = {item.likes}
             delete = {
                 <Link 
                 to={"/delete"}
-                state={{postId: item.id}}
+                state={{postId: item.PostSMTH.id}}
                 >
                     <Button variant="danger" >Delete post</Button>
                 </Link>

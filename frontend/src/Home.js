@@ -30,6 +30,7 @@ export default function AllPosts(){
             <Posts
             key = {item.PostSMTH.id}
             ownerid = {item.PostSMTH.owner_id}
+            postid = {item.PostSMTH.id}
             title = {item.PostSMTH.Title}
             baka = {item.PostSMTH.baka}
             owner = {item.PostSMTH.owner.email}

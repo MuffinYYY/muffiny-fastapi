@@ -1,6 +1,6 @@
 from pyexpat import model
 from .. import models,schemas,oath2 #Single dot means from this directory double dots means from directory above
-from fastapi import FastAPI, Depends, status, HTTPException, APIRouter
+from fastapi import FastAPI, Depends, status, HTTPException, APIRouter, File, UploadFile
 from typing import Optional, List
 from sqlalchemy.orm import Session
 from ..database import get_db #Import from current directory
@@ -16,6 +16,18 @@ router = APIRouter(
 
 save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth" : "optional","id" : 0}]
 
+@router.post("/uploadfile")
+def upload(file: UploadFile = File(...)):
+    try:
+        contents = file.file.read()
+        with open(file.filename, 'wb') as f:
+            f.write(contents)
+    except Exception:
+        return {"message": "There was an error uploading the file"}
+    finally:
+        file.file.close()
+
+    return {"message": f"Successfully uploaded {file.filename}"}
 
 #This function desplays all data that is in save_amogus list
 @router.get("/all", response_model= List[schemas.PostOut]) #List[schemas.PostOut] we are specify that we want respone model to be a list and each element should be validated as our schema
@@ -39,14 +51,13 @@ async def get_all_amogus(db: Session = Depends(get_db), limit: int = 9999, skip:
 """
 
 #This function return current user's posts
-@router.get("/current")
+@router.get("/current", response_model= List[schemas.PostOut])
 def get_current_user_post(Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
 
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
 
-    get_logged_user_post = db.query(models.PostSMTH).filter(models.PostSMTH.owner_id==current_user).all()
-    print(current_user)
+    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==current_user).all()
     return get_logged_user_post
 
 
@@ -100,8 +111,7 @@ def find_amogs_index (id : int):
 #This is function to get all posts from one user based on users id
 @router.get("/{ownerid}")
 def get_current_user_post(ownerid : int, db: Session = Depends(get_db)):
-
-    get_logged_user_post = db.query(models.PostSMTH).filter(models.PostSMTH.owner_id==ownerid).all()
+    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==ownerid).all()
     if not get_logged_user_post:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Not selected user") #raise exception
     return get_logged_user_post

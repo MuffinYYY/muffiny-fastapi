@@ -63,5 +63,5 @@ class TokenData(BaseModel):
     
 class Vote(BaseModel):
     post_id : conint(strict=int) #This will require STRICT integer, won't be allowed 10.2 or some other value
-    vote_dir : conint(strict=int, ge=0, le=1) #Strict int that has to be either 0 or 1 | 1 will be POST liked, 0 will be POST UNLIKED
+    vote_dir : conint(strict=int, ge=1, le=1) #Strict int that has to be either 0 or 1 | 1 will be POST liked, 0 will be POST UNLIKED
     #vote_dir : int = Field(int, ge=0, le=1) #the value has to be greater ir equal to 0 and less or equal than 1, we require int, so this will allow only two values 0 or 1
