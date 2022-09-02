@@ -50,6 +50,7 @@ export default function ClickedUser(){
             title = {item.PostSMTH.Title}
             baka = {item.PostSMTH.baka}
             likes = {item.likes}
+            path_name = {item.PostSMTH.path_name}
             />
         )
         })

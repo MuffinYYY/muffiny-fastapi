@@ -41,7 +41,6 @@ export default function GetUser(){
         )
     }
     const newArray = data.map(item =>{
-        console.log(item)
         return (
             <Posts
             key = {item.PostSMTH.id}
@@ -49,6 +48,7 @@ export default function GetUser(){
             title = {item.PostSMTH.Title}
             baka = {item.PostSMTH.baka}
             likes = {item.likes}
+            path_name = {item.PostSMTH.path_name}
             delete = {
                 <Link 
                 to={"/delete"}
@@ -61,10 +61,11 @@ export default function GetUser(){
                 <Link
                 to={"/edit"}
                 state={{
-                    postId: item.id,
-                    title: item.Title,
-                    baka: item.baka,
-                    ajusnevarat: item.ajusnevarat
+                    postId: item.PostSMTH.id,
+                    title: item.PostSMTH.Title,
+                    baka: item.PostSMTH.baka,
+                    ajusnevarat: item.PostSMTH.ajusnevarat,
+                    path_name: item.PostSMTH.path_name
                     }}
                 >
                     <Button variant="info" >Edit post</Button>

@@ -63,12 +63,9 @@ export default function Posts(props){
             })
         }
     }, [clicked])
-
-
     return(
-
         <Container className="post-card">
-            <Card.Img variant="top" src="../troll.jpg" className="card-img"/>
+            <Card.Img variant="top" src={`images/${props.path_name}`} className="card-img"/>
 
             {props.editMode ? <Form.Control 
                 placeholder={props.title}

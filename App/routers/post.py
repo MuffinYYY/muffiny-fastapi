@@ -1,4 +1,5 @@
 from pyexpat import model
+from statistics import mode
 from .. import models,schemas,oath2 #Single dot means from this directory double dots means from directory above
 from fastapi import FastAPI, Depends, status, HTTPException, APIRouter, File, UploadFile
 from typing import Optional, List
@@ -8,6 +9,8 @@ from sqlalchemy import func
 from fastapi.responses import JSONResponse
 from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
+import os.path, os
+import re
 
 router = APIRouter(
     prefix="/posts", #Every time insted of routing /posts/something, we just leave /somtehing and /posts will get added 
@@ -16,18 +19,24 @@ router = APIRouter(
 
 save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth" : "optional","id" : 0}]
 
+#Method to upload files
 @router.post("/uploadfile")
-def upload(file: UploadFile = File(...)):
+def upload(file: UploadFile, Authorize: AuthJWT = Depends()):
+
+    Authorize.jwt_required()
+
+    save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images'
+    name_of_file = file.filename
+    completeName = os.path.join(save_path, name_of_file)   
     try:
-        contents = file.file.read()
-        with open(file.filename, 'wb') as f:
+        contents = file.file.read() #Data that makes up the uploaded file
+        with open(completeName, 'wb') as f: #wb means write binary which is needed to upload mp4/jpg
             f.write(contents)
     except Exception:
         return {"message": "There was an error uploading the file"}
     finally:
         file.file.close()
-
-    return {"message": f"Successfully uploaded {file.filename}"}
+    return name_of_file
 
 #This function desplays all data that is in save_amogus list
 @router.get("/all", response_model= List[schemas.PostOut]) #List[schemas.PostOut] we are specify that we want respone model to be a list and each element should be validated as our schema
@@ -159,12 +168,21 @@ def delete_amogus (id : int, db: Session = Depends(get_db), Authorize: AuthJWT =
 
     post_query = db.query(models.PostSMTH).filter(models.PostSMTH.id==id)#Query the data based on id
     post_get_first = post_query.first() #Put into variable the queried row
+    path_to_remove = db.query(models.PostSMTH.path_name).filter(models.PostSMTH.id==id).first() #We need to find the path name we will be deleting
+
     if not post_get_first: #If the row couldn't be found, that means that post with id was deleted or doesn't exist
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"Post with id {id} not found or was already deleted") #raise exception
     if post_get_first.owner_id != current_user: #If the user_id in queried row isn't equall to current_user id that's logged in, raise error that action is forbidden
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to delete")
     deleted_post = post_query.delete(synchronize_session=False) #delete the qureyied post
     db.commit() #Commit changes to database
+
+    #regex to format queried path_name to valid string that can be removed from images directory 
+    txt = str(path_to_remove)
+    x = re.sub("^\('", "", txt)
+    y = x[:-3]
+
+    os.remove("C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images\\" + y)
     return deleted_post
     
 

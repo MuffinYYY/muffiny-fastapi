@@ -36,6 +36,7 @@ export default function AllPosts(){
             owner = {item.PostSMTH.owner.email}
             likes= {item.likes}
             state={{ownerId: item.PostSMTH.owner_id}}
+            path_name = {item.PostSMTH.path_name}
             />
         )
         })

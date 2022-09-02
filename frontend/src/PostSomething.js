@@ -7,8 +7,11 @@ import {Link} from 'react-router-dom'
 
 export default function PostSomething(){
     const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
+    const [dataFile, setDataFile] = useState('')
     const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
+    const [formsFile, setFormFile] = useState({})
+
     const url = `http://127.0.0.1:8000`
 
     const [forms, setFormData] = useState({
@@ -26,14 +29,52 @@ export default function PostSomething(){
         }))
     }
 
+    function handleChangeFile(event) {
+        setFormFile(event.target.files)
+    }
+
     function handleSubmit(event) {
         event.preventDefault()
         console.log("Handeling submit")
         setClicked(true)
       }
 
+
+      const formData = new FormData
+      formData.append('file', formsFile[0])
+
     useEffect(() => {
-        if(clicked && cookies.get('LoggedIn')){
+        if(clicked ){
+        console.log("Re rendering page to upload image")
+            fetch(`${url}/posts/uploadfile`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+            })
+            .then((response) => {
+            console.log(response.status)
+            setClicked(false)
+            return response.json()
+            })
+            .then((actualData) => {
+                setDataFile(actualData)
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    path_name:actualData
+                }))
+                
+                setError(null)
+            })
+            .catch((err) => {
+                setError(err.message)
+                setDataFile(null)
+                console.log(err.message)
+            })
+        }
+    }, [clicked])
+
+    useEffect(() => {
+        if(dataFile !== '' && cookies.get('LoggedIn')){
         console.log("Re rendering page")
             fetch(`${url}/posts`, {
             method: 'POST',    
@@ -42,7 +83,7 @@ export default function PostSomething(){
                 'Content-Type': 'application/json'
             },
             credentials: 'include',
-            body: JSON.stringify(forms)
+            body: JSON.stringify(forms),
             })
             .then((response) => {
             console.log(response.status)
@@ -59,11 +100,13 @@ export default function PostSomething(){
                 console.log(err.message)
             })
         }
-    }, [clicked])
+    }, [dataFile])
 
     return(
         <Container className='post-area'>
         <Form onSubmit={cookies.get('LoggedIn')? handleSubmit : <Link to='/login'/>}>
+
+            <Form.Control type="file" onChange={handleChangeFile}/>
             <Form.Control 
                 placeholder="Title"
                 name="Title"

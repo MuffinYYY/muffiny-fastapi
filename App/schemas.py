@@ -10,6 +10,7 @@ class PostBase(BaseModel):
     Title : str
     baka : str
     ajusnevarat : int
+    path_name : Optional[str] = ''
 
 #Define pydantic model that is required to be entered
 class Post(PostBase):

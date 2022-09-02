@@ -13,12 +13,18 @@ export default function Edit(){
     const [error, setError] = useState(null)
     const [response, setResponse] = useState({})
 
-    var id = location.state.postId
+    var id 
+    if(location.state === null){
+        id=0
+    }else{
+        id = location.state.postId
+    }
 
     const [forms, setFormData] = useState({
         Title: state !== null ?`${state.title}` : "",
         baka: state !== null ? `${state.baka}`: "",
-        ajusnevarat: state !== null ? `${state.ajusnevarat}` : ""
+        ajusnevarat: state !== null ? `${state.ajusnevarat}` : "",
+        path_name: state !== null ? `${state.path_name}` : ""
       })
     
     //Function that logs inputs into log in form fields
@@ -41,11 +47,11 @@ export default function Edit(){
         if(clicked === true){
         console.log("Re rendering page")
             fetch(`${url}/posts/${id}`, {
-            method: 'PUT',    
+            method: 'PUT',
             headers: {
                 'Accept': 'application/json',
                 'Content-Type': 'application/json'
-            },
+            },    
             credentials: 'include',
             body: JSON.stringify(forms)
             })
@@ -59,7 +65,7 @@ export default function Edit(){
             })
         }
     }, [clicked])
-
+console.log(location.state)
     return(
         state !== null ? 
         <Posts
@@ -67,6 +73,7 @@ export default function Edit(){
         title = {state.title}
         baka = {state.baka}
         editMode = {true}
+        path_name = {state.path_name}
         handleInput = {handleChange}
         edit = {
             <Button variant="info" onClick={handleSubmit}>Edit post</Button>
