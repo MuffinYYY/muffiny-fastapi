@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import {cookies} from "./App"
 import {Link} from 'react-router-dom'
+import Card from 'react-bootstrap/Card';
 
 export default function Upload(){
 
@@ -11,12 +12,16 @@ export default function Upload(){
       const [error, setError] = useState(null)
       const [clicked, setClicked] = useState(false)
       const url = `http://127.0.0.1:8000`
+      const [file, setFile] = useState();
+
+      const inputRef = useRef(null);
 
     //Function that logs inputs into log in form fields
     function handleChangeFile(event) {
         const {name, value} = event.target
         setFormFile(event.target.files)
         console.log(event.target.files)
+        setFile(URL.createObjectURL(event.target.files[0]));
     }
     console.log(formsFile[0])
     function handleSubmit(event) {
@@ -27,7 +32,12 @@ export default function Upload(){
 
       const formData = new FormData
       formData.append('file', formsFile[0])
-
+      
+      console.log(inputRef)
+      const handleClick = () => {
+        inputRef.current.click();
+      };
+      console.log(inputRef)
     useEffect(() => {
         if(clicked ){
         console.log("Re rendering page")
@@ -54,17 +64,10 @@ export default function Upload(){
     }, [clicked])
 
     console.log(data)
-    return(<h1>
-        <Form onSubmit={ handleSubmit}>
-      <Form.Group controlId="formFile" className="mb-3">
-        <Form.Control type="file" onChange={handleChangeFile}/>
-      </Form.Group>
-      <Button 
-            variant="primary"
-            type='submit'
-            >
-            Post
-            </Button>
-            </Form>
-    </h1>)
+    return(
+      <Form onSubmit={ handleSubmit}>
+        <Card.Img variant="top" onClick={handleClick} src="./troll.jpg" className="card-img"/>
+          <Form.Control type="file" style={{display: 'none'}} ref={inputRef} />
+      </Form>
+    )
 }

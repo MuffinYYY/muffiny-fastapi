@@ -74,3 +74,39 @@ body{
     margin-top: 4px;
     cursor: pointer;
 }
+
+.preview-div{
+    margin-left: 80px;
+}
+
+.card-img-edit{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 300px;
+    width: 300px;
+    border-style: inset;
+    cursor: pointer;
+}
+
+.card-img-edit-hover{
+    height: 100px;
+    width: 100px;
+}
+
+.imageBox {
+    position: relative;
+    float: left;
+    cursor: pointer;
+  }
+  
+  .imageBox .hover-img {
+    position: absolute;
+    left: 100px;
+    top: 120px;
+    display: none;
+  }
+  
+  .imageBox:hover .hover-img {
+    display: flex;
+    justify-content: center;
+  }

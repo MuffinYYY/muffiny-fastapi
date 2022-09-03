@@ -4,8 +4,8 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
 import {cookies} from "./App"
-export default function Posts(props){
 
+export default function Posts(props){
 
     let navigate = useNavigate(); 
     const routeChangeLogin = () =>{ 
@@ -65,17 +65,50 @@ export default function Posts(props){
     }, [clicked])
     return(
         <Container className="post-card">
-            <Card.Img variant="top" src={`images/${props.path_name}`} className="card-img"/>
 
-            {props.editMode ? <Form.Control 
-                placeholder={props.title}
-                name="Title"
-                className="text-area-title"
-                defaultValue={props.title}
-                onChange={props.handleInput}
-            />:
-            <h1 className="post-card-title" >{props.title}</h1> } 
-
+            {props.editMode ? 
+            <>
+            <Form>
+                <div className="imageBox">
+                    <div className="main-img">
+                        <Card.Img 
+                            variant="top" 
+                            src={`images/${props.path_name}`} 
+                            className="card-img-edit"
+                        />
+                    </div>
+                    <div className="hover-img">
+                        <Card.Img
+                            variant="top"
+                            src="/edit-new-icon-22.png"
+                            className="card-img-edit-hover"
+                            onClick={props.handleSecondClick} 
+                        />
+                    </div>
+                </div>
+                <Form.Control 
+                    type="file" 
+                    style={{display: 'none'}} 
+                    ref={props.currentRef} 
+                    onChange={props.handleImageUpload} 
+                    accept="image/png, image/jpeg"
+                />
+            </Form>
+                <Form.Control 
+                    placeholder={props.title}
+                    name="Title"
+                    className="text-area-title"
+                    defaultValue={props.title}
+                    onChange={props.handleInput}
+                />
+            </>
+            :
+            <>
+                <Card.Img variant="top" src={`images/${props.path_name}`} className="card-img"/>
+                <h1 className="post-card-title" >{props.title}</h1>
+            </>
+             } 
+            
             {props.editMode ? <Form.Control 
                 as="textarea"
                 placeholder={props.baka}
@@ -84,8 +117,8 @@ export default function Posts(props){
                 defaultValue={props.baka}
                 onChange={props.handleInput}
             />:
-
             <p>{props.baka}</p>}
+
             <div className="user-likes">
                 <h5 
                     className="owner-email" 

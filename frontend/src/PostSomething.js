@@ -10,7 +10,8 @@ export default function PostSomething(){
     const [dataFile, setDataFile] = useState('')
     const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
-    const [formsFile, setFormFile] = useState({})
+    const [File, setFile] = useState({})
+    const [previewFile, setPreviewFile] = useState()
 
     const url = `http://127.0.0.1:8000`
 
@@ -30,7 +31,8 @@ export default function PostSomething(){
     }
 
     function handleChangeFile(event) {
-        setFormFile(event.target.files)
+        setFile(event.target.files)
+        setPreviewFile(URL.createObjectURL(event.target.files[0]));
     }
 
     function handleSubmit(event) {
@@ -39,10 +41,9 @@ export default function PostSomething(){
         setClicked(true)
       }
 
-
-      const formData = new FormData
-      formData.append('file', formsFile[0])
-
+    const formData = new FormData
+    formData.append('file', File[0])
+    
     useEffect(() => {
         if(clicked ){
         console.log("Re rendering page to upload image")
@@ -106,7 +107,10 @@ export default function PostSomething(){
         <Container className='post-area'>
         <Form onSubmit={cookies.get('LoggedIn')? handleSubmit : <Link to='/login'/>}>
 
-            <Form.Control type="file" onChange={handleChangeFile}/>
+            <Form.Control type="file" onChange={handleChangeFile}  accept="image/png, image/jpeg"/>
+            <div className="preview-div">
+                {previewFile ? <img src={previewFile} className="card-img"/> : ""}
+            </div>
             <Form.Control 
                 placeholder="Title"
                 name="Title"

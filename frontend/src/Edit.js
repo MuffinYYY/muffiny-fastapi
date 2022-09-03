@@ -1,17 +1,23 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useLocation, Navigate } from 'react-router-dom';
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
+import {cookies} from "./App"
 
 export default function Edit(){
     const location = useLocation();
     const state = location.state
-    const [edit, setEdit] = useState(false)
     const [clicked, setClicked] = useState(false)
     const url = `http://127.0.0.1:8000`
     const [data, setData] = useState([{'id': ''}])
     const [error, setError] = useState(null)
     const [response, setResponse] = useState({})
+    const [File, setFile] = useState({})
+    const [dataFile, setDataFile] = useState('')
+    const [previewFile, setPreviewFile] = useState()
+    const [uploadResponse, setUploadResponse] = useState()
+
+    const inputRef = useRef(null);
 
     var id 
     if(location.state === null){
@@ -27,7 +33,6 @@ export default function Edit(){
         path_name: state !== null ? `${state.path_name}` : ""
       })
     
-    //Function that logs inputs into log in form fields
     function handleChange(event) {
         const {name, value} = event.target
         setFormData(prevFormData => ({
@@ -36,16 +41,58 @@ export default function Edit(){
         }))
     }
 
+    function handleChangeFile(event) {
+        setFile(event.target.files)
+    }
+
     function handleSubmit(event) {
-        event.preventDefault()
         console.log("Handeling submit")
         setClicked(true)
       }
 
+    function handleClick ()  {
+        inputRef.current.click();
+    };
+
+    const formData = new FormData
+    if(File[0] !== undefined){
+        formData.append('file', File[0])
+    }
 
     useEffect(() => {
-        if(clicked === true){
-        console.log("Re rendering page")
+        if(clicked && File[0] !== undefined){
+        console.log("Re rendering page to upload image")
+            fetch(`${url}/posts/uploadfile`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+            })
+            .then((response) => {
+            setClicked(false)
+            setUploadResponse(response.status)
+            return response.json()
+            })
+            .then((actualData) => {
+                setDataFile(actualData)
+                setFormData(prevFormData => ({
+                    ...prevFormData,
+                    path_name:actualData
+                }))
+                setError(null)
+            })
+            .catch((err) => {
+                setError(err.message)
+                setDataFile(null)
+                console.log(err.message)
+            })
+        }
+        if(clicked){
+            setDataFile(state.path_name)
+        }
+    }, [clicked])
+    
+    useEffect(() => {
+        if(dataFile !== ""){
             fetch(`${url}/posts/${id}`, {
             method: 'PUT',
             headers: {
@@ -57,15 +104,17 @@ export default function Edit(){
             })
             .then((response) => {
             setResponse(response)
-            })
+            }).then((actualData =>{
+                console.log("response data :" + actualData)
+            }))
             .catch((err) => {
                 setError(err.message)
                 setData(null)
                 console.log(err.message)
             })
         }
-    }, [clicked])
-console.log(location.state)
+    }, [dataFile])
+
     return(
         state !== null ? 
         <Posts
@@ -75,6 +124,9 @@ console.log(location.state)
         editMode = {true}
         path_name = {state.path_name}
         handleInput = {handleChange}
+        handleSecondClick = {handleClick}
+        currentRef = {inputRef}
+        handleImageUpload = {handleChangeFile}
         edit = {
             <Button variant="info" onClick={handleSubmit}>Edit post</Button>
         }
