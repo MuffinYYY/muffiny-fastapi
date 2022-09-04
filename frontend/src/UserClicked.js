@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
 import { useLocation, Navigate } from 'react-router-dom';
+import { url } from "./config";
 
 export default function ClickedUser(){
 
+    //Boilerplate states
     const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
     const [error, setError] = useState(null)
     const [response, setResponse] = useState({})
-
-    const url = `http://127.0.0.1:8000`
 
     const location = useLocation();
     var id
@@ -18,7 +18,8 @@ export default function ClickedUser(){
     }else{
         id = location.state
     }
-    console.log(response)
+
+    //Send to backend to fetch data about user we just clicked on
     useEffect(() => {
         fetch(`${url}/posts/${id}`)
         .then((response) => {
@@ -41,16 +42,17 @@ export default function ClickedUser(){
             <Navigate to="/" replace />
         )
     }
+
+    //Map over response (we got specified user's all posts) and return them individually 
     const newArray = data.map(item =>{
-        console.log(item)
         return (
             <Posts
-            key = {item.PostSMTH.id}
-            postid = {item.PostSMTH.id}
-            title = {item.PostSMTH.Title}
-            baka = {item.PostSMTH.baka}
-            likes = {item.likes}
-            path_name = {item.PostSMTH.path_name}
+                key = {item.PostSMTH.id}
+                postid = {item.PostSMTH.id}
+                title = {item.PostSMTH.Title}
+                baka = {item.PostSMTH.baka}
+                likes = {item.likes}
+                path_name = {item.PostSMTH.path_name}
             />
         )
         })

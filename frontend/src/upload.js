@@ -1,17 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
+import Container from 'react-bootstrap/Container';
 import Form from 'react-bootstrap/Form';
-import Button from 'react-bootstrap/Button';
-import {cookies} from "./App"
-import {Link} from 'react-router-dom'
 import Card from 'react-bootstrap/Card';
+import { url } from "./config";
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
 
 export default function Upload(){
+
+  //Practice file
 
     const [formsFile, setFormFile] = useState({})
       const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
       const [error, setError] = useState(null)
       const [clicked, setClicked] = useState(false)
-      const url = `http://127.0.0.1:8000`
       const [file, setFile] = useState();
 
       const inputRef = useRef(null);
@@ -30,15 +32,15 @@ export default function Upload(){
         setClicked(true)
       }
 
-      const formData = new FormData
+      const formData = new FormData()
       formData.append('file', formsFile[0])
       
       console.log(inputRef)
       const handleClick = () => {
         inputRef.current.click();
       };
-      console.log(inputRef)
-    useEffect(() => {
+
+      useEffect(() => {
         if(clicked ){
         console.log("Re rendering page")
             fetch(`${url}/posts/uploadfile`, {
@@ -64,10 +66,16 @@ export default function Upload(){
     }, [clicked])
 
     console.log(data)
-    return(
-      <Form onSubmit={ handleSubmit}>
-        <Card.Img variant="top" onClick={handleClick} src="./troll.jpg" className="card-img"/>
-          <Form.Control type="file" style={{display: 'none'}} ref={inputRef} />
-      </Form>
-    )
+    return (
+      <Container className="account">
+      <Row>
+        <Col className="account-info-posts" md={{ span: 4, offset: 0 }}>md=4</Col>
+        <Col className="account-info-posts" md={{ span: 4, offset: 0 }}>{`md={{ span: 4, offset: 4 }}`}</Col>
+      </Row>
+      <Row>
+      </Row>
+      <Row>
+      </Row>
+    </Container>
+    );
 }

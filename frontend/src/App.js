@@ -7,7 +7,6 @@ import CreateAccount from "./CreateAccount";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import PostSomething from "./PostSomething";
 import LoggedOut from "./LoggedOut";
-import Cookies from 'universal-cookie';
 import Home from './Home';
 import NavbarCustom from './Navbar'
 import GetUser from "./Account";
@@ -15,9 +14,9 @@ import Delete from "./delete";
 import Edit from "./Edit"
 import ClickedUser from "./UserClicked";
 import Upload from "./upload";
+import {cookies} from "./config"
 
-export const cookies = new Cookies();
-
+//Allows to manage state globally, we can set from different file for example that user is logged in
 export const UserContext = createContext();
 
 export default function App(){
@@ -28,7 +27,7 @@ export default function App(){
     <BrowserRouter>
     
     <div className="App">
-    <NavbarCustom/>
+    <NavbarCustom/> 
 
         <Container>
             <Routes>

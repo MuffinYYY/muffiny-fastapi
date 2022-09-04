@@ -2,10 +2,12 @@ import React, { useState, useEffect } from "react";
 import Form from 'react-bootstrap/Form';
 import Container from 'react-bootstrap/esm/Container';
 import Button from 'react-bootstrap/Button';
-import {cookies} from "./App"
+import { url, cookies } from "./config";
 import {Link} from 'react-router-dom'
 
 export default function PostSomething(){
+
+    //Boilerplate states
     const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
     const [dataFile, setDataFile] = useState('')
     const [error, setError] = useState(null)
@@ -13,15 +15,14 @@ export default function PostSomething(){
     const [File, setFile] = useState({})
     const [previewFile, setPreviewFile] = useState()
 
-    const url = `http://127.0.0.1:8000`
-
+    //Input form state
     const [forms, setFormData] = useState({
         Title: "",
         baka: "",
         ajusnevarat: ""
       })
     
-    //Function that logs inputs into log in form fields
+    //Function that logs changes and adds to our form state
     function handleChange(event) {
         const {name, value} = event.target
         setFormData(prevFormData => ({
@@ -30,32 +31,33 @@ export default function PostSomething(){
         }))
     }
 
+    //If any image is uploaded handle that change
     function handleChangeFile(event) {
         setFile(event.target.files)
         setPreviewFile(URL.createObjectURL(event.target.files[0]));
     }
 
+    //If submmit button is pressed
     function handleSubmit(event) {
         event.preventDefault()
-        console.log("Handeling submit")
         setClicked(true)
       }
 
-    const formData = new FormData
+    //Make image as formdata because backend requires multipart/form-data
+    const formData = new FormData()
     formData.append('file', File[0])
     
+    //If button is clicked first upload image to our backend and as response get it's name that will l8r be passed in path_name row in our database
     useEffect(() => {
         if(clicked ){
-        console.log("Re rendering page to upload image")
             fetch(`${url}/posts/uploadfile`, {
             method: 'POST',
             credentials: 'include',
             body: formData
             })
             .then((response) => {
-            console.log(response.status)
-            setClicked(false)
-            return response.json()
+                setClicked(false)
+                return response.json()
             })
             .then((actualData) => {
                 setDataFile(actualData)
@@ -74,9 +76,9 @@ export default function PostSomething(){
         }
     }, [clicked])
 
+    //If datafile has changed send all submmited data to backend
     useEffect(() => {
         if(dataFile !== '' && cookies.get('LoggedIn')){
-        console.log("Re rendering page")
             fetch(`${url}/posts`, {
             method: 'POST',    
             headers: {
@@ -87,9 +89,8 @@ export default function PostSomething(){
             body: JSON.stringify(forms),
             })
             .then((response) => {
-            console.log(response.status)
-            setClicked(false)
-            return response.json()
+                setClicked(false)
+                return response.json()
             })
             .then((actualData) => {
                 setData(actualData)

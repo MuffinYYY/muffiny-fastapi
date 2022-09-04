@@ -97,16 +97,37 @@ body{
     position: relative;
     float: left;
     cursor: pointer;
-  }
-  
-  .imageBox .hover-img {
+}
+
+.imageBox .hover-img {
     position: absolute;
     left: 100px;
     top: 120px;
     display: none;
-  }
-  
-  .imageBox:hover .hover-img {
+}
+
+.imageBox:hover .hover-img {
     display: flex;
     justify-content: center;
-  }
+}
+
+.account{
+    border: 1px solid black;
+    max-width: 1500px;
+    }
+
+
+.account-info{
+    border: 1px solid red;
+    max-height: 500px;
+    color: white;
+    position: relative;
+}
+
+.account-info-email{
+    position:absolute;
+    width:100%;
+    bottom:0;
+    left: 0;
+    text-align:center;
+}

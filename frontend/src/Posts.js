@@ -3,11 +3,13 @@ import Container from 'react-bootstrap/Container';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
-import {cookies} from "./App"
+import { url } from "./config";
 
 export default function Posts(props){
 
+    //This allows to change our route
     let navigate = useNavigate(); 
+
     const routeChangeLogin = () =>{ 
       navigate(`/account`);
     }
@@ -15,16 +17,17 @@ export default function Posts(props){
         navigate(`/user`, {state:props.ownerid});
     }
 
+    //Boilerplate states
     const [data, setData] = useState([])
     const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
+
+    //Allows us to persist the same like value between rerenders
     const likes = useRef(props.likes);
 
-    const url = `http://127.0.0.1:8000`
-
+    //Method to like post
     useEffect(() => {
         if(clicked){
-        console.log("Re rendering page")
             fetch(`${url}/vote`, {
             method: 'POST',    
             headers: {
@@ -39,20 +42,19 @@ export default function Posts(props){
             })
             .then((response) => {
             setClicked(false)
-                if(response.status === 201){
+                if(response.status === 201){//If user hasn't liked add like
                     likes.current = likes.current + 1;
-                }else if (response.status === 200){
+                }else if (response.status === 200){ //If user has liked and pressed again remove like
                     likes.current = likes.current -1;
-                }else if (response.status === 401 || response.status === 422){
+                }else if (response.status === 401 || response.status === 422){ //If user isn't logged in and tries to like redirect to login page
                     routeChangeLogin()
-                }else{
+                }else{ //If no changes current likes stay the same
                     likes.current = likes.current;
                 }
             return response.json()
             })
             .then((actualData) => {
                 setData(actualData)
-                console.log(data)
                 setError(null)
 
             })
@@ -63,6 +65,7 @@ export default function Posts(props){
             })
         }
     }, [clicked])
+
     return(
         <Container className="post-card">
 
@@ -73,7 +76,7 @@ export default function Posts(props){
                     <div className="main-img">
                         <Card.Img 
                             variant="top" 
-                            src={`images/${props.path_name}`} 
+                            src={props.previewFile} 
                             className="card-img-edit"
                         />
                     </div>

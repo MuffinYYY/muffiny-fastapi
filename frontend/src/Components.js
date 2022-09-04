@@ -2,6 +2,7 @@ import React from "react";
 import Form from 'react-bootstrap/Form';
 
 export default function FormElement(props){
+  //Style for login borders
   const style = {borderColor : props.alert? "red": "black"}
   
     return(

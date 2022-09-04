@@ -4,26 +4,26 @@ import Button from 'react-bootstrap/Button';
 import { serialize } from 'object-to-formdata'; //Library that simplifies serializng data to form-data
 import FormElement from "./Components"
 import {Link} from 'react-router-dom'
-import {cookies, UserContext} from "./App"
+import {UserContext} from "./App"
 import Container from 'react-bootstrap/esm/Container';
+import { url, cookies } from "./config";
 
 export default function LoginHandle() {
 
+  //Boilerplate states
   const { user, setUser } = useContext(UserContext);
-
   const [data, setData] = useState(null)
   const [error, setError] = useState(null)
   const [clicked, setClicked] = useState(false) //State that tracks Log in button state, whether it's clicked or not
   const [status, setStatus] = useState(null)
 
-  const url = `http://127.0.0.1:8000`
-
   //State that tracks input field
   const [forms, setFormData] = useState({
     email: "",
-    password: ""
+    assword: ""
   })
-  //Function that logs inputs into log in form fields
+
+  //Function that updates form state based on changes in forms
   function handleChange(event) {
     const {name, value} = event.target
     setFormData(prevFormData => ({
@@ -32,12 +32,13 @@ export default function LoginHandle() {
     }))
   }
 
-  //Function that serializes JS object to Form-data
-  function toFormData(){
-    return serialize(forms)
+  //Function that handle when submit is sent (button clicked)
+  function handleSubmit(event) {
+    event.preventDefault() //Prevents page reload when submmit sent
+    setClicked(true)
   }
 
-  //send log in info to API
+  //Send login info to backend
   useEffect(() => {
       if(clicked ){
         console.log("Re rendering page")
@@ -51,11 +52,12 @@ export default function LoginHandle() {
             body: JSON.stringify(forms)
           })
           .then((response) => {
+            //Check whether login was sucessfull
             if(response.status !=='200'){
               setClicked(false)
             }if(response.status === 200){
               cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
-              setUser({ loggedIn: true });
+              setUser({ loggedIn: true }); //Update useContext that will reflect and refresh our App.js
               
             }
             setStatus(response.status)
@@ -72,14 +74,7 @@ export default function LoginHandle() {
           })
       }
   }, [clicked])
-  //Function that handle when submit is sent (button clicked)
-  function handleSubmit(event) {
-    event.preventDefault()
-    console.log("Handeling submit")
-    setClicked(true)
-  }
 
-  //Render this on screen
   return (
     <Container className='login-container'>
       <Form onSubmit={handleSubmit}>
@@ -100,11 +95,12 @@ export default function LoginHandle() {
           alert = {status === 403 ? true : false}
         />
         <Button 
-        variant="primary"
-        type='submit'
+          variant="primary"
+          type='submit'
         >
           Log in
         </Button>
+        
         <Link to='/CreateAccount'>
           <Button>Create account</Button>
         </Link>
