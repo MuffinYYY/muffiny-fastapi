@@ -118,9 +118,10 @@ def find_amogs_index (id : int):
 """
 
 #This is function to get all posts from one user based on users id
-@router.get("/{ownerid}")
+@router.get("/{ownerid}", response_model= List[schemas.PostOut])
 def get_current_user_post(ownerid : int, db: Session = Depends(get_db)):
     get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==ownerid).all()
+    
     if not get_logged_user_post:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Not selected user") #raise exception
     return get_logged_user_post

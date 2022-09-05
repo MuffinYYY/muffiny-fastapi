@@ -131,3 +131,9 @@ body{
     left: 0;
     text-align:center;
 }
+
+.profile-img{
+    width: 250px;
+    height: 250px;
+    margin-left: 24px;
+}

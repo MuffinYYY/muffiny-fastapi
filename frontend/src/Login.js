@@ -1,7 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import { serialize } from 'object-to-formdata'; //Library that simplifies serializng data to form-data
 import FormElement from "./Components"
 import {Link} from 'react-router-dom'
 import {UserContext} from "./App"

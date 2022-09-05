@@ -45,7 +45,7 @@ export default function GetUser(){
             <Navigate to="/login" replace />
         )
     }
-
+    
     //Map over each array that is returned as response from backend and pass as props
     const newArray = data.map(item =>{
         return (
@@ -81,14 +81,14 @@ export default function GetUser(){
             />
         )
     })
-    console.log(data[0].PostSMTH.owner)
     //Return each post
     return(
         <Container className="account">
             <Row>
                 <OwnerInfo
-                    email = {data[0].PostSMTH.owner.email}
-                    registered_at = {data[0].PostSMTH.owner.created_at}
+                    email = {data[0] !== undefined ? data[0].PostSMTH.owner.email : ""}
+                    registered_at = {data[0] !== undefined ? data[0].PostSMTH.owner.created_at : ""}
+                    profile_img = {data[0] !== undefined ? data[0].PostSMTH.owner.profile_img_path_name : "profile_default.jpg"}
                 />
                 <Col className="account-info-posts" md={{ span: 6, offset: 0 }}>
                     {newArray}

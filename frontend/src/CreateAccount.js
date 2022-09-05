@@ -4,8 +4,17 @@ import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
 import {url} from "./config"
+import { useNavigate } from "react-router-dom";
 
 export default function CreateAccount(){
+
+  //This allows to change our route
+  let navigate = useNavigate(); 
+
+
+  const routeChangeLogin = () =>{ 
+      navigate(`/login`);
+  }
 
     //Boilerplate states
     const [data, setData] = useState(null)
@@ -60,6 +69,13 @@ export default function CreateAccount(){
         setClicked(false)
     }, [clicked])
 
+    //Redirect if successful account create
+    useEffect(()=>{
+      if(status === 201){
+        routeChangeLogin()
+      }
+    }, [status])
+    
     //Function that handle when submit is sent (button clicked)
     function handleSubmit(event) {
       event.preventDefault()

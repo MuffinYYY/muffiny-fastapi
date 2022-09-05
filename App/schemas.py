@@ -22,6 +22,7 @@ class Post(PostBase):
 class ResponseUserCreat(BaseModel): #This is response we expect to get when we create a new user
     email : EmailStr
     created_at : datetime
+    profile_img_path_name : Optional[str] = 'profile_default.jpg'
 
     class Config: #This converts SQLalchemy model to be a pydantic model because pydantic model requires dictionaries
         orm_mode = True

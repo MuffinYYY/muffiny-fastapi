@@ -2,6 +2,10 @@ import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
 import { useLocation, Navigate } from 'react-router-dom';
 import { url } from "./config";
+import Container from 'react-bootstrap/Container';
+import Row from 'react-bootstrap/Row';
+import Col from 'react-bootstrap/Col';
+import OwnerInfo from "./OwnerInfo";
 
 export default function ClickedUser(){
 
@@ -57,8 +61,17 @@ export default function ClickedUser(){
         )
         })
     return(
-        <div>
-            {newArray}
-        </div>
+        <Container className="account">
+            <Row>
+                <OwnerInfo
+                    email = {data[0].PostSMTH.owner.email}
+                    registered_at = {data[0].PostSMTH.owner.created_at}
+                    profile_img = {data[0] !== undefined ? data[0].PostSMTH.owner.profile_img_path_name : "profile_default.jpg"}
+                />
+                <Col className="account-info-posts" md={{ span: 6, offset: 0 }}>
+                    {newArray}
+                </Col>
+            </Row>
+        </Container>
     )
 }
