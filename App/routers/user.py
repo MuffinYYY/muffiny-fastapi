@@ -45,3 +45,19 @@ def get_user_by_id(id : int, db: Session = Depends(get_db)):
     if not get_user_byID: #If post_with_id was not found raise exception
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"User with id {id} not found") #raise exception  
     return get_user_byID
+
+#Update user account info
+@router.put("/current", status_code=status.HTTP_202_ACCEPTED, response_model=schemas.ResponseUserCreat)
+def update_user_account(payLoad:schemas.UserAccountUpdate, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
+
+    Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+
+    update_user_query = db.query(models.User).filter(models.User.id==current_user)
+    update_user_get_first = update_user_query.first() #Store this row into a new variable
+    if update_user_get_first.id != current_user: #Check if user_id asociated with post in our database is the same id, as current_user id
+        raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to perform this action")
+    update_user_query.update({**payLoad.dict()}, synchronize_session=False) #Update data
+    db.commit()#Commit changes to database
+    print(update_user_get_first)
+    return update_user_get_first

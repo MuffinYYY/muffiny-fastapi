@@ -21,7 +21,7 @@ save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth"
 
 #Method to upload files
 @router.post("/uploadfile")
-def upload(file: UploadFile, Authorize: AuthJWT = Depends()):
+async def upload(file: UploadFile, Authorize: AuthJWT = Depends()):
 
     Authorize.jwt_required()
 

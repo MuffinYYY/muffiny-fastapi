@@ -40,8 +40,11 @@ class PostOut(BaseModel): #This is pydantic model ant the dictionary will contai
     PostSMTH : ResponsePost
     likes : int
 
+class UserAccountUpdate(BaseModel):
+    profile_img_path_name : Optional[str] = 'profile_default.jpg'
 
-
+    class Config: #This converts SQLalchemy model to be a pydantic model because pydantic model requires dictionaries
+        orm_mode = True
 
 
 class UserCreate(BaseModel):

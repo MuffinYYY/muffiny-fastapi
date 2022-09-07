@@ -24,6 +24,7 @@ export default function PostSomething(){
     
     //Function that logs changes and adds to our form state
     function handleChange(event) {
+        event.preventDefault()
         const {name, value} = event.target
         setFormData(prevFormData => ({
             ...prevFormData,
@@ -33,8 +34,8 @@ export default function PostSomething(){
 
     //If any image is uploaded handle that change
     function handleChangeFile(event) {
+        event.preventDefault()
         setFile(event.target.files)
-        setPreviewFile(URL.createObjectURL(event.target.files[0]));
     }
 
     //If submmit button is pressed
@@ -50,13 +51,13 @@ export default function PostSomething(){
     //If button is clicked first upload image to our backend and as response get it's name that will l8r be passed in path_name row in our database
     useEffect(() => {
         if(clicked ){
+            console.log(clicked)
             fetch(`${url}/posts/uploadfile`, {
             method: 'POST',
             credentials: 'include',
             body: formData
             })
             .then((response) => {
-                setClicked(false)
                 return response.json()
             })
             .then((actualData) => {
@@ -89,7 +90,6 @@ export default function PostSomething(){
             body: JSON.stringify(forms),
             })
             .then((response) => {
-                setClicked(false)
                 return response.json()
             })
             .then((actualData) => {

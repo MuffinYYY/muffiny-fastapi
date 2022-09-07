@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { useLocation, Navigate, useNavigate } from 'react-router-dom';
+import { useLocation, Navigate } from 'react-router-dom';
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
 import {url} from "./config"
@@ -56,13 +56,13 @@ export default function Edit(){
     //If we click to upload image, open file explorer
     function handleClick ()  {
         inputRef.current.click();
-    };
+    }
 
     //When submmit button clicked set clicked state to true so that fetch api's can start to work
     function handleSubmit() {
         setClicked(true)
-        }
-    
+    }
+    console.log(forms)
     //Make uploaded file as formdata only when it's uploaded otherwise we will use last image
     const formData = new FormData()
     if(File[0] !== undefined){
