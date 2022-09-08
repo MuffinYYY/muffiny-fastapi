@@ -25,10 +25,6 @@ export default function Delete(){
         console.log("Re rendering page")
           fetch(`${url}/posts/${id}`, {
             method: 'DELETE',    
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
             credentials: 'include',
           })
           .then((response) => {

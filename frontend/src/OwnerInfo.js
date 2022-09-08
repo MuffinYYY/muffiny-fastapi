@@ -21,9 +21,8 @@ export default function OwnerInfo(props){
     const inputRef = useRef(null);
 
     const [forms, setFormData] = useState({
-        path_name: props.profile_img !== null ? `${props.profile_img}` : ""
+        profile_img_path_name: props.profile_img !== null ? `${props.profile_img}` : ""
       })
-
     const formData = new FormData()
     if(File[0] !== undefined){
         formData.append('file', File[0])
@@ -67,7 +66,7 @@ export default function OwnerInfo(props){
                 setDataFile(actualData)
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    path_name:actualData
+                    profile_img_path_name:actualData
                 }))
                 setError(null)
             })
@@ -79,9 +78,30 @@ export default function OwnerInfo(props){
         }
 
     }, [clicked])
+    console.log(dataFile)
 
-    console.log(forms)
-
+    useEffect(() => {
+        if(dataFile !== ""){
+            fetch(`${url}/users/current`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },    
+            credentials: 'include',
+            body: JSON.stringify(forms)
+            })
+            .then((response) => {
+                setResponse(response)
+            })
+            .catch((err) => {
+                setError(err.message)
+                setData(null)
+                console.log(err.message)
+            })
+            
+        }
+    }, [dataFile])
 
     return(
             <Col className="account-info" md={3}>
@@ -95,7 +115,7 @@ export default function OwnerInfo(props){
                             ref={inputRef} 
                         />
                     </div>
-                        <Card.Img variant="top" src={props.profile_img} className="profile-img" />
+                        <Card.Img variant="top" src={`images/${props.profile_img}`} className="profile-img" />
                 </div>
                     <Form.Control 
                         type="file" 
@@ -104,9 +124,12 @@ export default function OwnerInfo(props){
                         onChange={handleChangeFile} 
                         accept="image/png, image/jpeg"
                     />
-                    <div>
-                        <Button variant="info" onClick={handleSubmit}>Edit post</Button>
-                    </div>
+                    {isShown && 
+                        <div>
+                            <Button variant="info" onClick={handleSubmit}>Edit post</Button>
+                        </div>
+                    }
+                    
                 <div className="account-info-email">
                     <p >{props.registered_at}</p>
                     <h3 >{props.email}</h3>

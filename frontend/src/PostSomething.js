@@ -36,6 +36,7 @@ export default function PostSomething(){
     function handleChangeFile(event) {
         event.preventDefault()
         setFile(event.target.files)
+        setPreviewFile(URL.createObjectURL(event.target.files[0]));
     }
 
     //If submmit button is pressed

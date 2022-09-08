@@ -59,5 +59,4 @@ def update_user_account(payLoad:schemas.UserAccountUpdate, Authorize: AuthJWT = 
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to perform this action")
     update_user_query.update({**payLoad.dict()}, synchronize_session=False) #Update data
     db.commit()#Commit changes to database
-    print(update_user_get_first)
     return update_user_get_first

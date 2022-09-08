@@ -11,6 +11,7 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import os.path, os
 import re
+from sqlalchemy import or_
 
 router = APIRouter(
     prefix="/posts", #Every time insted of routing /posts/something, we just leave /somtehing and /posts will get added 
@@ -21,21 +22,27 @@ save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth"
 
 #Method to upload files
 @router.post("/uploadfile")
-async def upload(file: UploadFile, Authorize: AuthJWT = Depends()):
+async def upload(file: UploadFile, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
 
     Authorize.jwt_required()
 
     save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images'
     name_of_file = file.filename
     completeName = os.path.join(save_path, name_of_file)   
-    try:
-        contents = file.file.read() #Data that makes up the uploaded file
-        with open(completeName, 'wb') as f: #wb means write binary which is needed to upload mp4/jpg
-            f.write(contents)
-    except Exception:
-        return {"message": "There was an error uploading the file"}
-    finally:
-        file.file.close()
+    findIfPathExists = db.query(models.PostSMTH).filter(or_(name_of_file == models.PostSMTH.path_name, name_of_file == models.User.profile_img_path_name))
+    findAllPathExists = findIfPathExists.all()
+    findFirstPath = findIfPathExists.first()
+    if not findAllPathExists:
+        try:
+            contents = file.file.read() #Data that makes up the uploaded file
+            with open(completeName, 'wb') as f: #wb means write binary which is needed to upload mp4/jpg
+                f.write(contents)
+        except Exception:
+            return {"message": "There was an error uploading the file"}
+        finally:
+            file.file.close()
+    else:
+        name_of_file = findFirstPath.path_name
     return name_of_file
 
 #This function desplays all data that is in save_amogus list
@@ -139,6 +146,7 @@ def get_Amogus(id : int, db: Session = Depends(get_db)): # the :int will validat
     #We are quering amogus_table (post table) and joining it together with amogus_votes (votes) table based on if post id's match in both tables | Isouter defines that the join is LEFT OUTTER JOIN, by default it's LEFT INNER JOIN, then we are grouping together based on post_id and counting them
     if not results: #If post_with_id was not found raise exception
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"Post with id {id} not found") #raise exception
+    print(results)
     return results
 #This is how to get post with id using SQL syntax
 """
@@ -179,12 +187,16 @@ def delete_amogus (id : int, db: Session = Depends(get_db), Authorize: AuthJWT =
     db.commit() #Commit changes to database
 
     #regex to format queried path_name to valid string that can be removed from images directory 
-    txt = str(path_to_remove)
-    x = re.sub("^\('", "", txt)
-    y = x[:-3]
+    try:
+        txt = str(path_to_remove)
+        x = re.sub("^\('", "", txt)
+        y = x[:-3]
 
-    os.remove("C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images\\" + y)
-    return deleted_post
+        os.remove("C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images\\" + y)
+    except Exception:
+        return {"message": "There was an error deleting the file"}
+    finally:
+        return f"Deletd xd"
     
 
 #This is how to delete post using SQL syntax in VSCode
