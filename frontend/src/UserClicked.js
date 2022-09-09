@@ -25,22 +25,18 @@ export default function ClickedUser(){
 
     //Send to backend to fetch data about user we just clicked on
     useEffect(() => {
-        fetch(`${url}/posts/${id}`)
-        .then((response) => {
-            setResponse(response.status)
-            return response.json()
-        })
-        .then((actualData) => {
-            setData(actualData)
-            setError(null)
-        })
-        .catch((err) => {
-            setError(err.message)
-            setData(null)
-            console.log(err.message)
-        })
-    }, [])
-
+        const getClickedUser = async () => {
+            try{
+                const result = await fetch(`${url}/posts/${id}`)
+                setResponse(result.response)
+                const data = await result.json()
+                setData(data)
+            }catch(err){
+                console.log(err)
+            }
+        }
+        getClickedUser()
+    },[])
     if(response === 400){
         return(
             <Navigate to="/" replace />

@@ -15,34 +15,29 @@ export default function Delete(){
       id = location.state.postId
   }
 
-  //Boilerplate states
-  const [data, setData] = useState([{'id': ''}])
-  const [error, setError] = useState(null)
+  //Keep track of response code
   const [response, setResponse] = useState({})
   
   //Send delete command to backend
   useEffect(() => {
-        console.log("Re rendering page")
-          fetch(`${url}/posts/${id}`, {
-            method: 'DELETE',    
-            credentials: 'include',
-          })
-          .then((response) => {
-            setResponse(response)
-          })
-          .catch((err) => {
-              setError(err.message)
-              setData(null)
-              console.log(err.message)
-          })
-
-          
+    async function deletePost(){
+      try{
+        const result = await fetch(`${url}/posts/${id}`, {
+          method: 'DELETE',    
+          credentials: 'include',
+        })
+        setResponse(result.status)
+      }catch(err){
+        console.log(err)
+      }
+    }
+    deletePost()
   }, [])
 
   //If sucessfully or unsucessfully deletede return to account page
-  if(response.status === 204 || response.status === 404){
-      return(
-          <Navigate to="/account" replace />
-          )
+  if(response === 204 || response === 404){
+    return(
+      <Navigate to="/account" replace />
+    )
   }
 }

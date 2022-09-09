@@ -11,14 +11,11 @@ export default function CreateAccount(){
   //This allows to change our route
   let navigate = useNavigate(); 
 
-
   const routeChangeLogin = () =>{ 
       navigate(`/login`);
   }
 
     //Boilerplate states
-    const [data, setData] = useState(null)
-    const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
     const [status, setStatus] = useState()
 
@@ -40,9 +37,9 @@ export default function CreateAccount(){
 
     //Fetching data from backend
     useEffect(() => {
-        if(clicked && forms.password === forms.ConfirmPassword && forms.password !== ""){
-        console.log("rendered")
-            fetch(`${url}/users`, {
+      const createAccount = async () => {
+        try{
+          const result = await fetch(`${url}/users`, {
             method: 'POST',
             headers: {
                 'Accept': 'application/json',
@@ -50,23 +47,17 @@ export default function CreateAccount(){
             },
             body: JSON.stringify(forms)
             })
-            .then((response) => {
-              setStatus(response.status)
-              return response.json()
-            })
-            .then((actualData) => {
-              setData(actualData)
-              setError(null)
-            })
-            .catch((err) => {
-              setError(err.message)
-              setData(null)
-              console.log(err.message)
-            })
-        }else if (forms.password !== forms.ConfirmPassword){
-          setStatus(406)
+            setStatus(result.status)
+        }catch(err){
+          console.log(err)
         }
-        setClicked(false)
+      }
+      if(clicked && forms.password === forms.ConfirmPassword && forms.password !== ""){
+        createAccount()
+      }else if (forms.password !== forms.ConfirmPassword){
+        setStatus(406)
+      }
+      setClicked(false)
     }, [clicked])
 
     //Redirect if successful account create
@@ -121,5 +112,4 @@ export default function CreateAccount(){
       </Form>
     </Container>
     )
-
 }

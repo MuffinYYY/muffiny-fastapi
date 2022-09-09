@@ -6,25 +6,21 @@ export default function AllPosts(){
 
     //Boilerplate states
     const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
-    const [error, setError] = useState(null)
     
     //Method to get all posts from backend
     useEffect(() => {
-            fetch(`${url}/posts/all`, {
-                credentials: 'include'}
-            )
-            .then((response) => {
-                return response.json()
-            })
-            .then((actualData) => {
-                setData(actualData)
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
+        const getAllPosts = async () => {
+            try{
+                const result = await fetch(`${url}/posts/all`, {
+                    credentials: 'include'}
+                )
+                const data = await result.json()
+                setData(data)
+            }catch(err){
+                console.log(err)
+            }
+        }
+        getAllPosts()
     }, [])
         
     //Map over each returned array and pass values from it as states, to our Posts component

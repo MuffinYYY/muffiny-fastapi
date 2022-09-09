@@ -8,6 +8,7 @@ import {Link} from 'react-router-dom'
 export default function PostSomething(){
 
     //Boilerplate states
+    console.log("State change")
     const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
     const [dataFile, setDataFile] = useState('')
     const [error, setError] = useState(null)
@@ -42,6 +43,7 @@ export default function PostSomething(){
     //If submmit button is pressed
     function handleSubmit(event) {
         event.preventDefault()
+        console.log("submmit handle")
         setClicked(true)
       }
 
@@ -51,59 +53,49 @@ export default function PostSomething(){
     
     //If button is clicked first upload image to our backend and as response get it's name that will l8r be passed in path_name row in our database
     useEffect(() => {
-        if(clicked ){
-            console.log(clicked)
-            fetch(`${url}/posts/uploadfile`, {
-            method: 'POST',
-            credentials: 'include',
-            body: formData
-            })
-            .then((response) => {
-                return response.json()
-            })
-            .then((actualData) => {
-                setDataFile(actualData)
+        const uploadFile = async () => {
+            try{
+                const result = await fetch(`${url}/posts/uploadfile`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                    })
+                const data = await result.json()
+                console.log("data "+data)
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    path_name:actualData
+                    path_name:data
                 }))
-                
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setDataFile(null)
-                console.log(err.message)
-            })
+                console.log("after prevformdata")
+            }catch(err){
+                console.log(err)
+            }
+            postSomething()
+        }
+
+        const postSomething = async () => {
+            try{
+                console.log("before postsomething")
+                const result = await  fetch(`${url}/posts`, {
+                    method: 'POST',    
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify(forms),
+                    })
+                    console.log(forms)
+            }catch(err){
+                console.log(err)
+            }
+        }
+
+        if(clicked ){
+            uploadFile()
+            console.log("Run UploadFile")
         }
     }, [clicked])
-
-    //If datafile has changed send all submmited data to backend
-    useEffect(() => {
-        if(dataFile !== '' && cookies.get('LoggedIn')){
-            fetch(`${url}/posts`, {
-            method: 'POST',    
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify(forms),
-            })
-            .then((response) => {
-                return response.json()
-            })
-            .then((actualData) => {
-                setData(actualData)
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
-        }
-    }, [dataFile])
 
     return(
         <Container className='post-area'>

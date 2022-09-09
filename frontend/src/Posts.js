@@ -18,8 +18,6 @@ export default function Posts(props){
     }
 
     //Boilerplate states
-    const [data, setData] = useState([])
-    const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
 
     //Allows us to persist the same like value between rerenders
@@ -27,42 +25,35 @@ export default function Posts(props){
 
     //Method to like post
     useEffect(() => {
+        const likePost = async() =>{
+            try{
+                const result = await fetch(`${url}/vote`, {
+                    method: 'POST',    
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include',
+                    body: JSON.stringify({
+                        "post_id" : props.postid,
+                        "vote_dir" : 1
+                    })
+                    })
+                    if(result.status === 201){//If user hasn't liked add like
+                        likes.current = likes.current + 1;
+                    }else if (result.status === 200){ //If user has liked and pressed again remove like
+                        likes.current = likes.current -1;
+                    }else if (result.status === 401 || result.status === 422){ //If user isn't logged in and tries to like redirect to login page
+                        routeChangeLogin()
+                    }else{ //If no changes current likes stay the same
+                        likes.current = likes.current;
+                    }
+            }catch(err){
+                console.log(err)
+            }
+        }
         if(clicked){
-            fetch(`${url}/vote`, {
-            method: 'POST',    
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify({
-                "post_id" : props.postid,
-                "vote_dir" : 1
-            })
-            })
-            .then((response) => {
-            setClicked(false)
-                if(response.status === 201){//If user hasn't liked add like
-                    likes.current = likes.current + 1;
-                }else if (response.status === 200){ //If user has liked and pressed again remove like
-                    likes.current = likes.current -1;
-                }else if (response.status === 401 || response.status === 422){ //If user isn't logged in and tries to like redirect to login page
-                    routeChangeLogin()
-                }else{ //If no changes current likes stay the same
-                    likes.current = likes.current;
-                }
-            return response.json()
-            })
-            .then((actualData) => {
-                setData(actualData)
-                setError(null)
-
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
+            likePost()
         }
     }, [clicked])
 

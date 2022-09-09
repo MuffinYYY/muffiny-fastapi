@@ -12,31 +12,27 @@ export default function GetUser(){
 
     //States that are required 
     const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
-    const [error, setError] = useState(null)
     const [response, setResponse] = useState(null)
 
     //Fetch data from backend
     useEffect(() => {
-            fetch(`${url}/posts/current`, {
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            credentials: 'include'
-            })
-            .then((response) => {
-                setResponse(response.status)
-                return response.json()
-            })
-            .then((actualData) => {
-                setData(actualData)
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
+        async function getAccountInfo(){
+            try{
+                const result = await fetch(`${url}/posts/current`, {
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },
+                    credentials: 'include'
+                    })
+                    setResponse(result.status)
+                    const data = await result.json()
+                    setData(data)
+            }catch(err){
+                console.log(err)
+            }
+        }
+        getAccountInfo()
     }, [])
 
     //Deal with response error if user isn't logged in

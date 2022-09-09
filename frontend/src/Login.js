@@ -11,8 +11,6 @@ export default function LoginHandle() {
 
   //Boilerplate states
   const { user, setUser } = useContext(UserContext);
-  const [data, setData] = useState(null)
-  const [error, setError] = useState(null)
   const [clicked, setClicked] = useState(false) //State that tracks Log in button state, whether it's clicked or not
   const [status, setStatus] = useState(null)
 
@@ -39,39 +37,32 @@ export default function LoginHandle() {
 
   //Send login info to backend
   useEffect(() => {
-      if(clicked ){
-        console.log("Re rendering page")
-          fetch(`${url}/login`, {
-            method: 'POST',    
-            headers: {
-              'Accept': 'application/json',
-              'Content-Type': 'application/json'
-            },
-            credentials: 'include',
-            body: JSON.stringify(forms)
-          })
-          .then((response) => {
-            //Check whether login was sucessfull
-            if(response.status !=='200'){
-              setClicked(false)
-            }if(response.status === 200){
-              cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
-              setUser({ loggedIn: true }); //Update useContext that will reflect and refresh our App.js
-              
-            }
-            setStatus(response.status)
-            return response.json()
-          })
-          .then((actualData) => {
-              setData(actualData)
-              setError(null)
-          })
-          .catch((err) => {
-              setError(err.message)
-              setData(null)
-              console.log(err.message)
-          })
+    const userLogin = async () => {
+      try{
+        const result = await fetch(`${url}/login`, {
+          method: 'POST',    
+          headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+          },
+          credentials: 'include',
+          body: JSON.stringify(forms)
+        })
+        if(result.status !=='200'){
+          setClicked(false)
+        }if(result.status === 200){
+          cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
+          setUser({ loggedIn: true }); //Update useContext that will reflect and refresh our App.js
+          
+        }
+        setStatus(result.status)
+      }catch(err){
+        console.log(err)
       }
+    }
+    if(clicked ){
+      userLogin()
+    }
   }, [clicked])
 
   return (
