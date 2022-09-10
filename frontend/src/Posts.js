@@ -39,6 +39,7 @@ export default function Posts(props){
                         "vote_dir" : 1
                     })
                     })
+                    setClicked(false)
                     if(result.status === 201){//If user hasn't liked add like
                         likes.current = likes.current + 1;
                     }else if (result.status === 200){ //If user has liked and pressed again remove like
@@ -59,7 +60,6 @@ export default function Posts(props){
 
     return(
         <Container className="post-card">
-
             {props.editMode ? 
             <>
             <Form>

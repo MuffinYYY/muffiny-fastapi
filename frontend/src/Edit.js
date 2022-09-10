@@ -71,30 +71,26 @@ export default function Edit(){
 
     //Upload new image to backend server when submmit button clicked
     useEffect(() => {
-        if(clicked && File[0] !== undefined){
-            fetch(`${url}/posts/uploadfile`, {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            })
-            .then((response) => {
-                setClicked(false)
-                setUploadResponse(response.status)
-                return response.json()
-            })
-            .then((actualData) => {
-                setDataFile(actualData)
+        const uploadFile = async () => {
+            try{
+                const result = await fetch(`${url}/posts/uploadfile`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                    })
+                const data = await result.json()
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    path_name:actualData
+                    path_name:data
                 }))
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setDataFile(null)
-                console.log(err.message)
-            })
+                setDataFile(data)
+                console.log("after prevformdata")
+            }catch(err){
+                console.log(err)
+            }
+        }
+        if(clicked && File[0] !== undefined){
+            uploadFile()
         }
         if(clicked){
             setDataFile(state.path_name)
@@ -103,25 +99,23 @@ export default function Edit(){
     
     //Send updated data to backend
     useEffect(() => {
+        const editData = async () =>{
+            try {
+                const result = await fetch(`${url}/posts/${id}`, {
+                    method: 'PUT',
+                    headers: {
+                        'Accept': 'application/json',
+                        'Content-Type': 'application/json'
+                    },    
+                    credentials: 'include',
+                    body: JSON.stringify(forms)
+                    })
+            } catch (error) {
+                console.log(error)
+            }
+        }
         if(dataFile !== ""){
-            fetch(`${url}/posts/${id}`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },    
-            credentials: 'include',
-            body: JSON.stringify(forms)
-            })
-            .then((response) => {
-                setResponse(response)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
-            
+            editData()
         }
     }, [dataFile])
 

@@ -8,10 +8,7 @@ import {Link} from 'react-router-dom'
 export default function PostSomething(){
 
     //Boilerplate states
-    console.log("State change")
-    const [data, setData] = useState([{"PostSMTH":{"id" : ''}}])
     const [dataFile, setDataFile] = useState('')
-    const [error, setError] = useState(null)
     const [clicked, setClicked] = useState(false)
     const [File, setFile] = useState({})
     const [previewFile, setPreviewFile] = useState()
@@ -61,18 +58,23 @@ export default function PostSomething(){
                     body: formData
                     })
                 const data = await result.json()
-                console.log("data "+data)
                 setFormData(prevFormData => ({
                     ...prevFormData,
                     path_name:data
                 }))
+                setDataFile(data)
                 console.log("after prevformdata")
             }catch(err){
                 console.log(err)
             }
-            postSomething()
         }
 
+        if(clicked ){
+            uploadFile()
+            console.log("Run UploadFile")
+        }
+    }, [clicked])
+    useEffect(() => {
         const postSomething = async () => {
             try{
                 console.log("before postsomething")
@@ -85,18 +87,14 @@ export default function PostSomething(){
                     credentials: 'include',
                     body: JSON.stringify(forms),
                     })
-                    console.log(forms)
             }catch(err){
                 console.log(err)
             }
         }
-
-        if(clicked ){
-            uploadFile()
-            console.log("Run UploadFile")
+        if(forms.path_name !== undefined){
+            postSomething()
         }
-    }, [clicked])
-
+    },[dataFile])
     return(
         <Container className='post-area'>
         <Form onSubmit={cookies.get('LoggedIn')? handleSubmit : <Link to='/login'/>}>

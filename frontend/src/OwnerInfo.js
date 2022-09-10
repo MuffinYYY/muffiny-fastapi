@@ -4,19 +4,15 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
+import Container from "react-bootstrap/esm/Container";
 
 export default function OwnerInfo(props){
 
     const [clicked, setClicked] = useState(false)
-    const [data, setData] = useState([{'id': ''}])
-    const [error, setError] = useState(null)
-    const [response, setResponse] = useState({})
     const [File, setFile] = useState({})
     const [dataFile, setDataFile] = useState('')
     const [previewFile, setPreviewFile] = useState()
-    const [uploadResponse, setUploadResponse] = useState()
     const [isShown, setIsShown] = useState(false);
-    const [subbmitClicked, setSubbmitClicked] = useState(false)
 
     const inputRef = useRef(null);
 
@@ -49,57 +45,43 @@ export default function OwnerInfo(props){
 
     //Upload new image to backend server when submmit button clicked
      useEffect(() => {
-        if(clicked === true){
-            setClicked(false)
-            fetch(`${url}/posts/uploadfile`, {
-                method: 'POST',
-                credentials: 'include',
-                body: formData
-            })
-            .then((response) => {
-                setUploadResponse(response.status)
-                setClicked(false)
-                console.log(response.status)
-                return response.json()
-            })
-            .then((actualData) => {
-                setDataFile(actualData)
+        const uploadFile = async () => {
+            try{
+                const result = await fetch(`${url}/posts/uploadfile`, {
+                    method: 'POST',
+                    credentials: 'include',
+                    body: formData
+                    })
+                const data = await result.json()
                 setFormData(prevFormData => ({
                     ...prevFormData,
-                    profile_img_path_name:actualData
+                    profile_img_path_name:data
                 }))
-                setError(null)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setDataFile(null)
-                console.log(err.message)
-            })
+                setDataFile(data)
+                console.log("after prevformdata")
+            }catch(err){
+                console.log(err)
+            }
         }
-
+        if(clicked ){
+            uploadFile()
+        }
     }, [clicked])
-    console.log(dataFile)
 
     useEffect(() => {
+        const uploadData = async()=>{
+            const result = await fetch(`${url}/users/current`, {
+                method: 'PUT',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                },    
+                credentials: 'include',
+                body: JSON.stringify(forms)
+                })
+        }
         if(dataFile !== ""){
-            fetch(`${url}/users/current`, {
-            method: 'PUT',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },    
-            credentials: 'include',
-            body: JSON.stringify(forms)
-            })
-            .then((response) => {
-                setResponse(response)
-            })
-            .catch((err) => {
-                setError(err.message)
-                setData(null)
-                console.log(err.message)
-            })
-            
+            uploadData()
         }
     }, [dataFile])
 

@@ -15,9 +15,13 @@ import Edit from "./Edit"
 import ClickedUser from "./UserClicked";
 import Upload from "./upload";
 import {cookies} from "./config"
+import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
+import { ReactQueryDevtools } from 'react-query/devtools'
 
 //Allows to manage state globally, we can set from different file for example that user is logged in
 export const UserContext = createContext();
+
+const queryClient = new QueryClient()
 
 export default function App(){
     const [user, setUser] = useState({ loggedIn: cookies.get('LoggedIn') });
@@ -28,7 +32,7 @@ export default function App(){
     
     <div className="App">
     <NavbarCustom/> 
-
+    <QueryClientProvider client={queryClient}>
         <Container>
             <Routes>
                 <Route path="/" element={<Home />}/>
@@ -40,9 +44,11 @@ export default function App(){
                 <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
                 <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
                 <Route path="/user" element={<ClickedUser /> } />
-                <Route path="/upload" element={<Upload /> } />
+                <Route path="/upload" element={<Upload/>}/>
             </Routes>
         </Container>
+        <ReactQueryDevtools initialIsOpen={false}/>
+        </QueryClientProvider>
     </div>
     </BrowserRouter>
     </UserContext.Provider>

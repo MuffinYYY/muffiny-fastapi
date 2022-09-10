@@ -6,68 +6,63 @@ import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import OwnerInfo from "./OwnerInfo";
+import { useQuery } from "react-query";
 
 export default function ClickedUser(){
-
-    //Boilerplate states
-    const [data, setData] = useState([{"PostSMTH":{"id" : '', "owner": {}}}])
-    const [error, setError] = useState(null)
-    const [response, setResponse] = useState({})
-
     const location = useLocation();
     var id
-  
     if(location.state === null){
-        id = 0
+        id = 1
     }else{
         id = location.state
     }
 
-    //Send to backend to fetch data about user we just clicked on
-    useEffect(() => {
-        const getClickedUser = async () => {
-            try{
-                const result = await fetch(`${url}/posts/${id}`)
-                setResponse(result.response)
-                const data = await result.json()
-                setData(data)
-            }catch(err){
-                console.log(err)
-            }
-        }
-        getClickedUser()
-    },[])
-    if(response === 400){
-        return(
-            <Navigate to="/" replace />
-        )
+    const getAccountInfo = async() =>{
+        const result = await fetch(`${url}/posts/${id}`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+            })
+        return result.json()
     }
-
-    //Map over response (we got specified user's all posts) and return them individually 
-    const newArray = data.map(item =>{
-        return (
-            <Posts
-                key = {item.PostSMTH.id}
-                postid = {item.PostSMTH.id}
-                title = {item.PostSMTH.Title}
-                baka = {item.PostSMTH.baka}
-                likes = {item.likes}
-                path_name = {item.PostSMTH.path_name}
-            />
-        )
-        })
+    const {data, status} = useQuery('id', getAccountInfo)
+    console.log(data)
     return(
-        <Container className="account">
+        <div>
+            {status === 'error' && (
+            <h1>Error fetching data</h1>
+            )}
+
+            {status === 'loading' && (
+            <h1>Loading data...</h1>
+            )}
+            {status === 'success' && (
+                <Container className="account">
             <Row>
                 <OwnerInfo
                     email = {data[0].PostSMTH.owner.email}
                     registered_at = {data[0].PostSMTH.owner.created_at}
-                    profile_img = {data[0] !== undefined ? data[0].PostSMTH.owner.profile_img_path_name : "profile_default.jpg"}
+                    profile_img = {data[0].PostSMTH.owner.profile_img_path_name }
                 />
                 <Col className="account-info-posts" md={{ span: 6, offset: 0 }}>
-                    {newArray}
+                {data.map(item =>{
+                return (
+                    <Posts
+                        key = {item.PostSMTH.id}
+                        postid = {item.PostSMTH.id}
+                        title = {item.PostSMTH.Title}
+                        baka = {item.PostSMTH.baka}
+                        likes = {item.likes}
+                        path_name = {item.PostSMTH.path_name}
+                    />
+                )
+                })}
                 </Col>
             </Row>
         </Container>
+            )}
+        </div>
     )
 }

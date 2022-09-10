@@ -5,60 +5,44 @@ import Card from 'react-bootstrap/Card';
 import { url } from "./config";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
+import { useQuery} from 'react-query'
 
 export default function Upload(){
 
-  //Practice file
-      console.log("Setting states")
-
-      const [formsFile, setFormFile] = useState({})
-      const [clicked, setClicked] = useState(false)
-      const [file, setFile] = useState();
-
-      const inputRef = useRef(null);
-
-    //Function that logs inputs into log in form fields
-    function handleChangeFile(event) {
-        const {name, value} = event.target
-        setFormFile(event.target.files)
-        setFile(URL.createObjectURL(event.target.files[0]));
-    }
-    function handleSubmit(event) {
-        event.preventDefault()
-        console.log("Handeling submit")
-        setClicked(true)
-      }
-
-      const formData = new FormData()
-      formData.append('file', formsFile[0])
-      
-      const handleClick = () => {
-        inputRef.current.click();
-        console.log("Handle click")
-      };
-
-      useEffect(() => {
-        async function asyncCall(){
-          try{
-            const result = await fetch(`${url}/posts/uploadfile`, {
-              method: 'POST',
-              credentials: 'include',
-              body: formData
-            })
-            const data = await result.json();
-            return console.log(data)
-            }
-            catch (err) {
-              console.log(err)
-            }
-        }
-        if(clicked ){
-          asyncCall()
-        }
-    }, [clicked])
-
+  const fetchPlanets = async (page) => {
+    const res = await fetch(`http://swapi.dev/api/planets/?page=${page}`)
+    return res.json()
+  }
+    const [page, setPage] = useState(1)
+    const {data, status} =  useQuery(['planets', page], () => fetchPlanets(page), {
+      keepPreviousData: true,
+    })
+    console.log(data)
 
     return (
-      <button onClick={handleSubmit}></button>
-    );
+      <div>
+        <h1>StarWars planets</h1>
+
+        {status === 'error' && (
+          <h1>Error fetching data</h1>
+        )}
+
+        {status === 'loading' && (
+          <h1>Loading data...</h1>
+        )}
+
+        {status === 'success' && (
+          <>
+          <button onClick={() =>setPage(prevPage => !data || !data.next ? prevPage : prevPage+1)}>YoYoYo</button>
+          
+          {data.results.map(item =>{
+            return (
+              <div key={item.name}>{item.name}</div>
+            )
+          })}
+          </>
+
+        )}
+      </div>
+    )
 }
