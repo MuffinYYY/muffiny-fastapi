@@ -3,6 +3,8 @@ import { useLocation, Navigate } from 'react-router-dom';
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
 import {url} from "./config"
+import { useMutation } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function Edit(){
     
@@ -10,14 +12,15 @@ export default function Edit(){
     const location = useLocation();
     const state = location.state
 
-    const [clicked, setClicked] = useState(false)
-    const [data, setData] = useState([{'id': ''}])
-    const [error, setError] = useState(null)
-    const [response, setResponse] = useState({})
+      //This allows to change our route
+    let navigate = useNavigate(); 
+
+    const routeChangeAccount = () =>{ 
+      navigate(`/Account`);
+    }
+
     const [File, setFile] = useState({})
-    const [dataFile, setDataFile] = useState('')
     const [previewFile, setPreviewFile] = useState()
-    const [uploadResponse, setUploadResponse] = useState()
 
     //Allows us to persist values between renders
     const inputRef = useRef(null);
@@ -60,64 +63,56 @@ export default function Edit(){
 
     //When submmit button clicked set clicked state to true so that fetch api's can start to work
     function handleSubmit() {
-        setClicked(true)
-    }
-    console.log(forms)
-    //Make uploaded file as formdata only when it's uploaded otherwise we will use last image
-    const formData = new FormData()
-    if(File[0] !== undefined){
-        formData.append('file', File[0])
+        mutate()
     }
 
-    //Upload new image to backend server when submmit button clicked
-    useEffect(() => {
-        const uploadFile = async () => {
-            try{
-                const result = await fetch(`${url}/posts/uploadfile`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
-                    })
-                const data = await result.json()
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    path_name:data
-                }))
-                setDataFile(data)
-                console.log("after prevformdata")
-            }catch(err){
-                console.log(err)
-            }
+    //Make uploaded file as formdata only when it's uploaded otherwise we will use last image
+    const formData = new FormData()
+    formData.append('file', File[0])
+
+    const uploadFile = async () => {
+        if (File[0] !== undefined){
+        const result = await fetch(`${url}/posts/uploadfile`, {
+            method: 'POST',
+            credentials: 'include',
+            body: formData
+            })
+            const data = await result.json()
+
+            return data
         }
-        if(clicked && File[0] !== undefined){
-            uploadFile()
-        }
-        if(clicked){
-            setDataFile(state.path_name)
-        }
-    }, [clicked])
+        return forms.path_name
+    }
+
+    const editData = async (data) =>{
+        const result = await fetch(`${url}/posts/${id}`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },    
+                credentials: 'include',
+                body: JSON.stringify(
+                    {
+                        ...forms,
+                        path_name:data
+                    }
+                )
+            })
+        return result.status
+    }
     
-    //Send updated data to backend
-    useEffect(() => {
-        const editData = async () =>{
-            try {
-                const result = await fetch(`${url}/posts/${id}`, {
-                    method: 'PUT',
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },    
-                    credentials: 'include',
-                    body: JSON.stringify(forms)
-                    })
-            } catch (error) {
-                console.log(error)
-            }
+    const { mutate } = useMutation(uploadFile, {
+        onSuccess: (data) => {
+            mutateAsync(data)
+          }
+
+    })
+    const { mutateAsync } = useMutation(editData, {
+        onSuccess: (result) => {
+            routeChangeAccount()
         }
-        if(dataFile !== ""){
-            editData()
-        }
-    }, [dataFile])
+    })
 
     return(
         state !== null ? 

@@ -22,7 +22,7 @@ export default function GetUser(){
         return result.json()
     }
     const {data, status} = useQuery('id', getAccountInfo)
-
+    
 return(
     <div>
     {status === 'error' && (

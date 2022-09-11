@@ -4,12 +4,11 @@ import Container from 'react-bootstrap/esm/Container';
 import Button from 'react-bootstrap/Button';
 import { url, cookies } from "./config";
 import {Link} from 'react-router-dom'
+import { useMutation } from "react-query";
 
 export default function PostSomething(){
 
     //Boilerplate states
-    const [dataFile, setDataFile] = useState('')
-    const [clicked, setClicked] = useState(false)
     const [File, setFile] = useState({})
     const [previewFile, setPreviewFile] = useState()
 
@@ -40,61 +39,49 @@ export default function PostSomething(){
     //If submmit button is pressed
     function handleSubmit(event) {
         event.preventDefault()
-        console.log("submmit handle")
-        setClicked(true)
+        mutate()
       }
 
     //Make image as formdata because backend requires multipart/form-data
     const formData = new FormData()
     formData.append('file', File[0])
-    
-    //If button is clicked first upload image to our backend and as response get it's name that will l8r be passed in path_name row in our database
-    useEffect(() => {
-        const uploadFile = async () => {
-            try{
-                const result = await fetch(`${url}/posts/uploadfile`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
-                    })
-                const data = await result.json()
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    path_name:data
-                }))
-                setDataFile(data)
-                console.log("after prevformdata")
-            }catch(err){
-                console.log(err)
-            }
-        }
 
-        if(clicked ){
-            uploadFile()
-            console.log("Run UploadFile")
-        }
-    }, [clicked])
-    useEffect(() => {
-        const postSomething = async () => {
-            try{
-                console.log("before postsomething")
-                const result = await  fetch(`${url}/posts`, {
-                    method: 'POST',    
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify(forms),
-                    })
-            }catch(err){
-                console.log(err)
-            }
-        }
-        if(forms.path_name !== undefined){
-            postSomething()
-        }
-    },[dataFile])
+    const uploadFile = async () => {
+        const result = await fetch(`${url}/posts/uploadfile`, {
+                method: 'POST',
+                credentials: 'include',
+                body: formData
+            })
+            const data = await result.json()
+
+            return data
+    }
+
+    const postSomething = async (data) => {
+        const result = await  fetch(`${url}/posts`, {
+            method: 'POST',    
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify(
+                {
+                    ...forms,
+                    path_name:data
+                }
+            )
+            })
+    }
+
+    const { mutate } = useMutation(uploadFile, {
+        onSuccess: (data) => {
+            mutateAsync(data)
+          }
+
+    })
+    const { mutateAsync } = useMutation(postSomething)
+
     return(
         <Container className='post-area'>
         <Form onSubmit={cookies.get('LoggedIn')? handleSubmit : <Link to='/login'/>}>

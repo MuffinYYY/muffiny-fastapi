@@ -5,6 +5,7 @@ import Button from 'react-bootstrap/Button';
 import Container from "react-bootstrap/esm/Container";
 import {url} from "./config"
 import { useNavigate } from "react-router-dom";
+import { useMutation } from "react-query";
 
 export default function CreateAccount(){
 
@@ -15,8 +16,6 @@ export default function CreateAccount(){
       navigate(`/login`);
   }
 
-    //Boilerplate states
-    const [clicked, setClicked] = useState(false)
     const [status, setStatus] = useState()
 
     //State that tracks input field
@@ -35,45 +34,38 @@ export default function CreateAccount(){
         }))
     }
 
-    //Fetching data from backend
-    useEffect(() => {
-      const createAccount = async () => {
-        try{
-          const result = await fetch(`${url}/users`, {
-            method: 'POST',
-            headers: {
-                'Accept': 'application/json',
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(forms)
-            })
-            setStatus(result.status)
-        }catch(err){
-          console.log(err)
-        }
-      }
-      if(clicked && forms.password === forms.ConfirmPassword && forms.password !== ""){
-        createAccount()
-      }else if (forms.password !== forms.ConfirmPassword){
-        setStatus(406)
-      }
-      setClicked(false)
-    }, [clicked])
-
-    //Redirect if successful account create
-    useEffect(()=>{
-      if(status === 201){
-        routeChangeLogin()
-      }
-    }, [status])
-    
     //Function that handle when submit is sent (button clicked)
     function handleSubmit(event) {
       event.preventDefault()
       console.log("Handeling submit")
-      setClicked(true)
+      if(forms.password === forms.ConfirmPassword && forms.password !== ""){
+        mutate()
+      }else if (forms.password !== forms.ConfirmPassword){
+        setStatus(406)
+      }
     }
 
+    const createAccount = async () => {
+      const result = await fetch(`${url}/users`, {
+        method: 'POST',
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(forms)
+        }) 
+        return result.status
+    }
+
+    const { data: response,  mutate} = useMutation(createAccount)
+
+    //Redirect if successful account create
+    useEffect(()=>{
+      if(response === 201){
+        routeChangeLogin()
+      }
+    }, [response])
+    
     return(
     <Container className="create-container">
       <Form onSubmit={handleSubmit}>
@@ -83,7 +75,7 @@ export default function CreateAccount(){
           name="email"
           controlId="formBasicEmail"
           handleOnChange={handleChange}
-          alert = {status === 409 ? true : false}
+          alert = {response === 409 ? true : false}
         />
         <FormElement
           placeholder="Password"
@@ -107,7 +99,7 @@ export default function CreateAccount(){
         >
           Create Account
         </Button>
-          {status === 409 ? <p className='danger-alert'>User exists</p>: ""}
+          {response === 409 ? <p className='danger-alert'>User exists</p>: ""}
           {status === 406 ? <p className='danger-alert'>Passwords don't match</p>: ""}
       </Form>
     </Container>

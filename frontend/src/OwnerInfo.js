@@ -4,13 +4,11 @@ import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
-import Container from "react-bootstrap/esm/Container";
+import { useMutation } from "react-query";
 
 export default function OwnerInfo(props){
 
-    const [clicked, setClicked] = useState(false)
     const [File, setFile] = useState({})
-    const [dataFile, setDataFile] = useState('')
     const [previewFile, setPreviewFile] = useState()
     const [isShown, setIsShown] = useState(false);
 
@@ -39,51 +37,45 @@ export default function OwnerInfo(props){
     //When submmit button clicked set clicked state to true so that fetch api's can start to work
     function handleSubmit(event) {
         event.preventDefault()
-        setClicked(true)
+        mutate()
         setIsShown(false)
     }
 
-    //Upload new image to backend server when submmit button clicked
-     useEffect(() => {
-        const uploadFile = async () => {
-            try{
-                const result = await fetch(`${url}/posts/uploadfile`, {
-                    method: 'POST',
-                    credentials: 'include',
-                    body: formData
-                    })
-                const data = await result.json()
-                setFormData(prevFormData => ({
-                    ...prevFormData,
-                    profile_img_path_name:data
-                }))
-                setDataFile(data)
-                console.log("after prevformdata")
-            }catch(err){
-                console.log(err)
-            }
-        }
-        if(clicked ){
-            uploadFile()
-        }
-    }, [clicked])
-
-    useEffect(() => {
-        const uploadData = async()=>{
-            const result = await fetch(`${url}/users/current`, {
-                method: 'PUT',
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json'
-                },    
+    const uploadFile = async () => {
+        const result = await fetch(`${url}/posts/uploadfile`, {
+                method: 'POST',
                 credentials: 'include',
-                body: JSON.stringify(forms)
-                })
-        }
-        if(dataFile !== ""){
-            uploadData()
-        }
-    }, [dataFile])
+                body: formData
+            })
+            const data = await result.json()
+
+            return data
+    }
+
+    const uploadData = async (data) => {
+        const result = await fetch(`${url}/users/current`, {
+            method: 'PUT',
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },    
+            credentials: 'include',
+            body: JSON.stringify(
+                {
+                    ...forms,
+                    profile_img_path_name:data
+                }
+            )
+            })
+    }
+
+    const { mutate } = useMutation(uploadFile, {
+        onSuccess: (data) => {
+            mutateAsync(data)
+          }
+
+    })
+    const { mutateAsync } = useMutation(uploadData)
 
     return(
             <Col className="account-info" md={3}>

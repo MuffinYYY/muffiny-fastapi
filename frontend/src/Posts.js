@@ -4,6 +4,7 @@ import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import { useNavigate } from "react-router-dom";
 import { url } from "./config";
+import { useMutation } from "react-query";
 
 export default function Posts(props){
 
@@ -17,46 +18,34 @@ export default function Posts(props){
         navigate(`/user`, {state:props.ownerid});
     }
 
-    //Boilerplate states
-    const [clicked, setClicked] = useState(false)
-
     //Allows us to persist the same like value between rerenders
     const likes = useRef(props.likes);
 
-    //Method to like post
-    useEffect(() => {
-        const likePost = async() =>{
-            try{
-                const result = await fetch(`${url}/vote`, {
-                    method: 'POST',    
-                    headers: {
-                        'Accept': 'application/json',
-                        'Content-Type': 'application/json'
-                    },
-                    credentials: 'include',
-                    body: JSON.stringify({
-                        "post_id" : props.postid,
-                        "vote_dir" : 1
-                    })
-                    })
-                    setClicked(false)
-                    if(result.status === 201){//If user hasn't liked add like
-                        likes.current = likes.current + 1;
-                    }else if (result.status === 200){ //If user has liked and pressed again remove like
-                        likes.current = likes.current -1;
-                    }else if (result.status === 401 || result.status === 422){ //If user isn't logged in and tries to like redirect to login page
-                        routeChangeLogin()
-                    }else{ //If no changes current likes stay the same
-                        likes.current = likes.current;
-                    }
-            }catch(err){
-                console.log(err)
-            }
-        }
-        if(clicked){
-            likePost()
-        }
-    }, [clicked])
+    const likePost = async () => {
+        const result = await fetch(`${url}/vote`, {
+            method: 'POST',    
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include',
+            body: JSON.stringify({
+                "post_id" : props.postid,
+                "vote_dir" : 1
+            })
+            })
+            if(result.status === 201){//If user hasn't liked add like
+                likes.current = likes.current + 1;
+            }else if (result.status === 200){ //If user has liked and pressed again remove like
+                likes.current = likes.current -1;
+            }else if (result.status === 401 || result.status === 422){ //If user isn't logged in and tries to like redirect to login page
+                routeChangeLogin()
+            }else{ //If no changes current likes stay the same
+                likes.current = likes.current;
+            }    
+    }
+
+    const { data: response,  mutate} = useMutation(likePost)
 
     return(
         <Container className="post-card">
@@ -123,7 +112,7 @@ export default function Posts(props){
                 src="../heart-icon.png" 
                 className="heart-icon"
                 onClick={()=> {
-                    setClicked(true)
+                    mutate()
                 }}
             />
                 <h5>{likes.current}</h5>

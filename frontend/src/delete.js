@@ -1,6 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect} from "react";
 import { useLocation, Navigate } from 'react-router-dom';
 import {url} from "./config"
+import { useMutation } from "react-query";
 
 export default function Delete(){
 
@@ -15,23 +16,18 @@ export default function Delete(){
       id = location.state.postId
   }
 
-  //Keep track of response code
-  const [response, setResponse] = useState({})
-  
-  //Send delete command to backend
-  useEffect(() => {
-    async function deletePost(){
-      try{
-        const result = await fetch(`${url}/posts/${id}`, {
-          method: 'DELETE',    
-          credentials: 'include',
-        })
-        setResponse(result.status)
-      }catch(err){
-        console.log(err)
-      }
-    }
-    deletePost()
+  const deletePost = async () => {
+    console.log("delete post called")
+    const result = await fetch(`${url}/posts/${id}`, {
+      method: 'DELETE',    
+      credentials: 'include',
+    })
+    return result.status
+  }
+
+  const { data: response,  mutate} = useMutation(deletePost)
+  useEffect(()=>{
+    mutate()
   }, [])
 
   //If sucessfully or unsucessfully deletede return to account page
