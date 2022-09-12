@@ -20,6 +20,7 @@ class PostSMTH(Base):
     meth = Column(Integer, nullable = True)
     owner_id = Column(Integer, ForeignKey("amogus_users.id", ondelete="CASCADE"), nullable = False) #Ondelete cascade means that if user is deleted, all the posts asociated with the user will be deleted
     path_name = Column(String, nullable = True)
+    posted_at = Column(TIMESTAMP(timezone=True),  server_default = text('now()'))
 
     owner = relationship("User") #Relationship says SQL alchemy to fetch some data based on relationship. Basicly right now when we reference in our schema this new variable owner, it will get every data asociated with model User
     #So we are fetching from User class which is below us, email, password, id, created_at

@@ -69,6 +69,7 @@ export default function Edit(){
     //Make uploaded file as formdata only when it's uploaded otherwise we will use last image
     const formData = new FormData()
     formData.append('file', File[0])
+    console.log(File[0])
 
     const uploadFile = async () => {
         if (File[0] !== undefined){
@@ -81,7 +82,7 @@ export default function Edit(){
 
             return data
         }
-        return forms.path_name
+        mutate()
     }
 
     const editData = async (data) =>{
@@ -104,6 +105,7 @@ export default function Edit(){
     
     const { mutate } = useMutation(uploadFile, {
         onSuccess: (data) => {
+            console.log(data)
             mutateAsync(data)
           }
 

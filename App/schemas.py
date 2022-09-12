@@ -30,6 +30,7 @@ class ResponseUserCreat(BaseModel): #This is response we expect to get when we c
 class ResponsePost(PostBase): # This is respopnse we will be getting when we send back request
     owner_id : int
     id : int
+    posted_at : datetime
     owner : ResponseUserCreat
 
 

@@ -101,12 +101,13 @@ export default function Posts(props){
                 onChange={props.handleInput}
             />:
             <p>{props.baka}</p>}
+            <p>Posted at: {props.posted_at}</p>
 
             <div className="user-likes">
-                <h5 
+                <h6 
                     className="owner-email" 
                     onClick={routeChangeUser}
-                >Posted by: {props.owner}</h5>
+                >Posted by: {props.owner}</h6>
             <Card.Img 
                 variant="top" 
                 src="../heart-icon.png" 

@@ -12,14 +12,11 @@ export default function ClickedUser(){
     const location = useLocation();
     var id
     if(location.state === null){
-        id = 1
+        id = 0
     }else{
         id = location.state
     }
-
-    useEffect(() => {
-        window.scrollTo(0, 0);
-      }, []);
+    console.log("id "+id)
 
     const getAccountInfo = async() =>{
         const result = await fetch(`${url}/posts/${id}`, {
@@ -31,7 +28,10 @@ export default function ClickedUser(){
             })
         return result.json()
     }
-    const {data, status} = useQuery('id', getAccountInfo)
+    const {data, status} = useQuery('postid', getAccountInfo, {
+        cacheTime: 1,
+      })
+    console.log(status)
 
     return(
         <div>

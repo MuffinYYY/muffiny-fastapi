@@ -54,7 +54,7 @@ async def get_all_amogus(db: Session = Depends(get_db), limit: int = 9999, skip:
     #posts_based_on_user = db.query(models.PostSMTH).filter(models.PostSMTH.user_id==current_user.id).all() #This will require us to be logged in and we'll see only logged in user's posts
     #print(current_user.email) #This returns current user's email from Users table
 
-    results = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.Title.contains(search)).limit(limit).offset(skip).all()
+    results = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.Title.contains(search)).order_by(models.PostSMTH.posted_at.desc()).limit(limit).offset(skip).all()
     #We are quering amogus_table (post table) and joining it together with amogus_votes (votes) table based on if post id's match in both tables | Isouter defines that the join is LEFT OUTTER JOIN, by default it's LEFT INNER JOIN, then we are grouping together based on post_id and counting them
     #What filter does is explained in line 20
     return results
@@ -73,7 +73,7 @@ def get_current_user_post(Authorize: AuthJWT = Depends(), db: Session = Depends(
     Authorize.jwt_required()
     current_user = Authorize.get_jwt_subject()
 
-    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==current_user).all()
+    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==current_user).order_by(models.PostSMTH.posted_at.desc()).all()
     return get_logged_user_post
 
 
@@ -127,7 +127,7 @@ def find_amogs_index (id : int):
 #This is function to get all posts from one user based on users id
 @router.get("/{ownerid}", response_model= List[schemas.PostOut])
 def get_current_user_post(ownerid : int, db: Session = Depends(get_db)):
-    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==ownerid).all()
+    get_logged_user_post = db.query(models.PostSMTH, func.count(models.Votes.post_id).label("likes")).join(models.Votes, models.Votes.post_id == models.PostSMTH.id, isouter = True).group_by(models.PostSMTH.id).filter(models.PostSMTH.owner_id==ownerid).order_by(models.PostSMTH.posted_at.desc()).all()
     
     if not get_logged_user_post:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, detail=f"Not selected user") #raise exception
