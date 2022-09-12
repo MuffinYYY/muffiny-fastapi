@@ -8,41 +8,15 @@ import Col from 'react-bootstrap/Col';
 import { useQuery} from 'react-query'
 
 export default function Upload(){
+  return (
+    <Container className="test-container">
+      <Row className="test-row-1">
+        <Col className="test-col-1" sm></Col>
+        <Col className="test-col-4" sm>sm=true</Col>
+        <Col className="test-col-2" sm>sm=4</Col>
+      </Row>
 
-  const fetchPlanets = async (page) => {
-    const res = await fetch(`http://swapi.dev/api/planets/?page=${page}`)
-    return res.json()
-  }
-    const [page, setPage] = useState(1)
-    const {data, status} =  useQuery(['planets', page], () => fetchPlanets(page), {
-      keepPreviousData: true,
-    })
-    console.log(data)
-
-    return (
-      <div>
-        <h1>StarWars planets</h1>
-
-        {status === 'error' && (
-          <h1>Error fetching data</h1>
-        )}
-
-        {status === 'loading' && (
-          <h1>Loading data...</h1>
-        )}
-
-        {status === 'success' && (
-          <>
-          <button onClick={() =>setPage(prevPage => !data || !data.next ? prevPage : prevPage+1)}>YoYoYo</button>
-          
-          {data.results.map(item =>{
-            return (
-              <div key={item.name}>{item.name}</div>
-            )
-          })}
-          </>
-
-        )}
-      </div>
-    )
+    </Container>
+  );
+    
 }

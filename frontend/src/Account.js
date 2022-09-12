@@ -33,14 +33,15 @@ return(
         <h1>Loading data...</h1>
     )}
     {status === 'success' && (
-        <Container className="account" >
-            <Row>
-                <OwnerInfo
-                    email = {data[0].PostSMTH.owner.email }
-                    registered_at = {data[0].PostSMTH.owner.created_at}
-                    profile_img = {data[0].PostSMTH.owner.profile_img_path_name}
-                />
-                <Col className="account-info-posts" md={{ span: 6, offset: 0 }}>
+            <Row className="account">
+                <Col className="owner-info-col" md={4}>
+                    <OwnerInfo
+                        email = {data[0].PostSMTH.owner.email }
+                        registered_at = {data[0].PostSMTH.owner.created_at}
+                        profile_img = {data[0].PostSMTH.owner.profile_img_path_name}
+                    />
+                </Col>
+                <Col className="owner-allposts-col" md>
                     {
                         data.map(item =>{
                             return (
@@ -75,11 +76,12 @@ return(
                                     }
                                 />
                             )
+                            
                         })
                     }
                 </Col>
-            </Row>
-        </Container>
+                <Col sm></Col>
+            </Row>  
     )}
     </div>
 )

@@ -78,7 +78,7 @@ export default function OwnerInfo(props){
     const { mutateAsync } = useMutation(uploadData)
 
     return(
-            <Col className="account-info" md={3}>
+        <div className="owner-info">
                 <div className="imageBox">
                     <div className="hover-img">
                         <Card.Img
@@ -106,8 +106,8 @@ export default function OwnerInfo(props){
                     
                 <div className="account-info-email">
                     <p >{props.registered_at}</p>
-                    <h3 >{props.email}</h3>
+                    <p >{props.email}</p>
                 </div>
-            </Col>
+        </div>
     )
 }

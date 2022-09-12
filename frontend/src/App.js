@@ -32,22 +32,22 @@ export default function App(){
     
     <div className="App">
     <NavbarCustom/> 
-    <QueryClientProvider client={queryClient}>
-        <Container>
-            <Routes>
-                <Route path="/" element={<Home />}/>
-                <Route path="/createAccount" element={<CreateAccount />}/>
-                <Route path="/login" element={cookies.get('LoggedIn') ? <Navigate to="/" replace /> :  <LoginHandle />}  />
-                <Route path="/PostSomething" element={cookies.get('LoggedIn') ?  <PostSomething/> :  <Navigate to="/login" replace />}/>
-                <Route path="/logout" element={<LoggedOut /> } />
-                <Route path="/Account" element={cookies.get('LoggedIn') ?  <GetUser/> :  <Navigate to="/login" replace />} />
-                <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
-                <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
-                <Route path="/user" element={<ClickedUser /> } />
-                <Route path="/upload" element={<Upload/>}/>
-            </Routes>
-        </Container>
-        <ReactQueryDevtools initialIsOpen={false}/>
+        <QueryClientProvider client={queryClient}>
+            <Container>
+                <Routes>
+                    <Route path="/" element={<Home />}/>
+                    <Route path="/createAccount" element={<CreateAccount />}/>
+                    <Route path="/login" element={cookies.get('LoggedIn') ? <Navigate to="/" replace /> :  <LoginHandle />}  />
+                    <Route path="/PostSomething" element={cookies.get('LoggedIn') ?  <PostSomething/> :  <Navigate to="/login" replace />}/>
+                    <Route path="/logout" element={<LoggedOut /> } />
+                    <Route path="/Account" element={cookies.get('LoggedIn') ?  <GetUser/> :  <Navigate to="/login" replace />} />
+                    <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
+                    <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
+                    <Route path="/user" element={<ClickedUser /> } />
+                    <Route path="/upload" element={<Upload/>}/>
+                </Routes>
+                </Container>
+            <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     </div>
     </BrowserRouter>

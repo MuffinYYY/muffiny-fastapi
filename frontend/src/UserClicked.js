@@ -17,6 +17,10 @@ export default function ClickedUser(){
         id = location.state
     }
 
+    useEffect(() => {
+        window.scrollTo(0, 0);
+      }, []);
+
     const getAccountInfo = async() =>{
         const result = await fetch(`${url}/posts/${id}`, {
             headers: {
@@ -28,7 +32,7 @@ export default function ClickedUser(){
         return result.json()
     }
     const {data, status} = useQuery('id', getAccountInfo)
-    console.log(data)
+
     return(
         <div>
             {status === 'error' && (
@@ -39,29 +43,30 @@ export default function ClickedUser(){
             <h1>Loading data...</h1>
             )}
             {status === 'success' && (
-                <Container className="account">
-            <Row>
-                <OwnerInfo
-                    email = {data[0].PostSMTH.owner.email}
-                    registered_at = {data[0].PostSMTH.owner.created_at}
-                    profile_img = {data[0].PostSMTH.owner.profile_img_path_name }
-                />
-                <Col className="account-info-posts" md={{ span: 6, offset: 0 }}>
-                {data.map(item =>{
-                return (
-                    <Posts
-                        key = {item.PostSMTH.id}
-                        postid = {item.PostSMTH.id}
-                        title = {item.PostSMTH.Title}
-                        baka = {item.PostSMTH.baka}
-                        likes = {item.likes}
-                        path_name = {item.PostSMTH.path_name}
-                    />
-                )
-                })}
-                </Col>
-            </Row>
-        </Container>
+                <Row className="account">
+                    <Col className="owner-info-col" md={4}>
+                        <OwnerInfo
+                            email = {data[0].PostSMTH.owner.email}
+                            registered_at = {data[0].PostSMTH.owner.created_at}
+                            profile_img = {data[0].PostSMTH.owner.profile_img_path_name }
+                        />
+                    </Col>
+                    <Col className="owner-allposts-col" md>
+                        {data.map(item =>{
+                        return (
+                            <Posts
+                                key = {item.PostSMTH.id}
+                                postid = {item.PostSMTH.id}
+                                title = {item.PostSMTH.Title}
+                                baka = {item.PostSMTH.baka}
+                                likes = {item.likes}
+                                path_name = {item.PostSMTH.path_name}
+                            />
+                        )
+                        })}
+                    </Col>
+                    <Col></Col>
+                </Row>
             )}
         </div>
     )

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import Posts from "./Posts"
 import { url } from "./config";
 import { useQuery } from "react-query";
+import Spinner from 'react-bootstrap/Spinner';
 
 export default function AllPosts(){
 
@@ -20,7 +21,9 @@ export default function AllPosts(){
             )}
 
             {status === 'loading' && (
-            <h1>Loading data...</h1>
+                <Spinner animation="border" role="status">
+                    <span className="visually-hidden">Loading...</span>
+                </Spinner>
             )}
             {status === 'success' && (
                 <>

@@ -8,17 +8,7 @@ body{
     max-width: 300px;
     text-align: center;
 }
-.post-card{
-    max-width: 30rem;
-    margin-top: 20px;
-    border-style: ridge;
-    border-radius: 2rem;
-    text-align: justify;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    color: white;
-}
+
 .post-card-title {
     text-align: center;
 }
@@ -34,9 +24,6 @@ body{
     text-align: center;
 }
 
-.test{
-   border-color: red;
-}
 .navbar-brand{
     margin-left: 100px;
 }
@@ -79,13 +66,53 @@ body{
     margin-left: 80px;
 }
 
-.card-img-edit{
+
+/* Post styling */
+
+.post-card{
+    max-width: 40vh;
     margin-top: 20px;
-    margin-bottom: 20px;
-    height: 300px;
-    width: 300px;
-    border-style: inset;
+    border-style: ridge;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    color: white;
+}
+
+
+/* Account styling */
+
+.account{
+    border: 1px solid black;
+}
+
+.owner-info-col{
+    border: 1px solid red;
+    word-wrap: break-word;
+    max-height: 50vh;
+}
+
+.owner-info{
+    height: 100%;
+    text-align: center;
+}
+
+.account-info-email{
+    color: white;
+    font-size: 22px;
+}
+
+.profile-img{
+    max-width: 300px;
+    max-height: 300px;
+}
+
+
+/* Hover to change profile image */
+
+.imageBox {
     cursor: pointer;
+    position: relative;
 }
 
 .card-img-edit-hover{
@@ -93,50 +120,26 @@ body{
     width: 100px;
 }
 
-.imageBox {
-    position: relative;
-    float: left;
-    cursor: pointer;
-}
-
-.imageBox .hover-img {
+.hover-img {
     position: absolute;
-    left: 100px;
-    top: 120px;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
     display: none;
 }
 
 .imageBox:hover .hover-img {
-    display: flex;
-    justify-content: center;
-}
-
-.account{
-    border: 1px solid black;
-    max-width: 1500px;
-    }
-
-
-.account-info{
     border: 1px solid red;
-    max-height: 50vh;
-    color: white;
-    position: relative;
-}
-
-.account-info-email{
-    position:absolute;
-    width:100%;
-    bottom:0;
-    left: 0;
-    text-align:center;
+    display: flex;
 }
 
 
-.profile-img{
-    width: 200px;
-    height: 200px;
-    margin-left: 30px;
-    margin-top: 40px;
-}
+/* Edit mode profile img */
 
+.card-img-edit{
+    margin-top: 20px;
+    margin-bottom: 20px;
+    height: 300px;
+    width: 300px;
+    cursor: pointer;
+}
