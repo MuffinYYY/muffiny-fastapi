@@ -77,6 +77,11 @@ export default function OwnerInfo(props){
     })
     const { mutateAsync } = useMutation(uploadData)
 
+    function dateFormat(registered_at){
+        const formated_time = registered_at.replace(/[\-]/g,'/').replace(/[T]/g, ' ').slice(0, -13) + ' '
+        return formated_time
+    }
+
     return(
         <div className="owner-info">
                 <div className="imageBox">
@@ -105,7 +110,7 @@ export default function OwnerInfo(props){
                     }
                     
                 <div className="account-info-email">
-                    <p >{props.registered_at}</p>
+                    <p >{dateFormat(props.registered_at)}</p>
                     <p >{props.email}</p>
                 </div>
         </div>

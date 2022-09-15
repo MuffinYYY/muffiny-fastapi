@@ -25,15 +25,21 @@ export default function Delete(){
     return result.status
   }
 
-  const { data: response,  mutate} = useMutation(deletePost)
+  const { data: response,status,  mutate} = useMutation(deletePost)
   useEffect(()=>{
     mutate()
   }, [])
-
+  console.log(status)
   //If sucessfully or unsucessfully deletede return to account page
-  if(response === 204 || response === 404){
+  if(status === 'success'){
     return(
       <Navigate to="/account" replace />
     )
   }
+  if(status === 'idle' || status === 'loading'){
+    return(
+      <h1>Deleting...</h1>
+    )
+  }
+
 }

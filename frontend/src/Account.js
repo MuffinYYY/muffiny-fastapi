@@ -10,7 +10,6 @@ import OwnerInfo from "./OwnerInfo";
 import { useQuery } from "react-query";
 
 export default function GetUser(){
-
     const getAccountInfo = async() =>{
         const result = await fetch(`${url}/posts/current`, {
             headers: {
@@ -22,7 +21,10 @@ export default function GetUser(){
         return result.json()
     }
     const {data, status} = useQuery('id', getAccountInfo)
-    
+    if(data !== undefined ){
+        if(data[0] !== undefined){
+        }
+    }
 return(
     <div>
     {status === 'error' && (
@@ -32,7 +34,7 @@ return(
     {status === 'loading' && (
         <h1>Loading data...</h1>
     )}
-    {status === 'success' && (
+    {status === 'success' && data !==undefined && data[0] !== undefined &&(
             <Row className="account">
                 <Col className="owner-info-col" md={4}>
                     <OwnerInfo
@@ -82,6 +84,14 @@ return(
                 </Col>
                 <Col sm></Col>
             </Row>  
+    )}
+    {status === 'success' && data[0] === undefined &&(
+        <div>
+            <h1>Uh oh, looks like you haven't posted anything</h1>
+            <Link to='/PostSomething'>
+                <Button>Post something</Button>
+            </Link>
+        </div>
     )}
     </div>
 )

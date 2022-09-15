@@ -13,6 +13,11 @@ export default function AllPosts(){
         return res.json()
     }
     const {data, status} =  useQuery('id', getAllPosts)
+
+    function dateFormat(posted_at){
+        const formated_time = posted_at.replace(/[\-]/g,'/').replace(/[T]/g, ' ').slice(0, -13) + ' '
+        return formated_time
+    }
       
     return(
         <div>
@@ -39,7 +44,8 @@ export default function AllPosts(){
                             likes= {item.likes}
                             state={{ownerId: item.PostSMTH.owner_id}}
                             path_name = {item.PostSMTH.path_name}
-                            posted_at = {item.PostSMTH.posted_at}
+    
+                            posted_at = {dateFormat(item.PostSMTH.posted_at)}
                         />
                     )
                     })}
