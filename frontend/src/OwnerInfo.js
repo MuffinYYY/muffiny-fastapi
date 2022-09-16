@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import {url} from "./config"
-import Col from 'react-bootstrap/Col';
 import Card from 'react-bootstrap/Card';
 import Form from 'react-bootstrap/Form';
 import Button from 'react-bootstrap/Button';
 import { useMutation } from "react-query";
+import {cookies} from "./config"
 
 export default function OwnerInfo(props){
 
@@ -81,12 +81,33 @@ export default function OwnerInfo(props){
         const formated_time = registered_at.replace(/[\-]/g,'/').replace(/[T]/g, ' ').slice(0, -13) + ' '
         return formated_time
     }
+    
+    //Conditionally handle when hovered
+    const [isHover, setIsHover] = useState(false);
 
+    const hoverImgStyle = {
+        position: 'absolute',
+        top: '50%',
+        left: '50%',
+        transform: 'translate(-50%, -50%)',
+        display: isHover && cookies.get('LoggedIn') && props.email === cookies.get('email') ? 'flex' : 'none',
+        cursor : 'pointer'
+    }
+
+    function handleMouseEnter(){
+        setIsHover(true)
+    }
+    function handleMouseLeave(){
+        setIsHover(false)
+    }
     return(
         <div className="owner-info">
                 <div className="imageBox">
-                    <div className="hover-img">
-                        <Card.Img
+                    <div 
+                    onMouseEnter = {handleMouseEnter}
+                    onMouseLeave = {handleMouseLeave}>
+                        <img
+                            style={hoverImgStyle}    
                             variant="top"
                             src="/edit-new-icon-22.png"
                             className="card-img-edit-hover"
@@ -94,7 +115,11 @@ export default function OwnerInfo(props){
                             ref={inputRef} 
                         />
                     </div>
-                        <Card.Img variant="top" src={`images/${props.profile_img}`} className="profile-img" />
+                        <div
+                        onMouseEnter = {handleMouseEnter}
+                        onMouseLeave = {handleMouseLeave}>
+                            <Card.Img variant="top" src={`images/${props.profile_img}`} className="profile-img" />
+                        </div>
                 </div>
                     <Form.Control 
                         type="file" 

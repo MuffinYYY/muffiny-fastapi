@@ -1,3 +1,4 @@
+from http import server
 from sqlalchemy import Column, Integer, String, Boolean, ForeignKey
 from .database import Base
 from sqlalchemy.sql.sqltypes import TIMESTAMP
@@ -33,6 +34,7 @@ class User(Base):
     id = Column(Integer, primary_key = True, nullable = False)
     created_at = Column(TIMESTAMP(timezone=True), nullable = False, server_default = text('now()'))
     profile_img_path_name = Column(String, nullable = True)
+    role = Column(String, nullable = False, server_default = 'user')
 
 class Votes(Base):
     __tablename__ = "amogus_votes"

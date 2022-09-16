@@ -31,7 +31,6 @@ export default function ClickedUser(){
     const {data, status} = useQuery('postid', getAccountInfo, {
         cacheTime: 1,
       })
-    console.log(status)
 
     return(
         <div>

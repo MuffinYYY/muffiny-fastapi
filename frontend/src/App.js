@@ -20,12 +20,12 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 
 //Allows to manage state globally, we can set from different file for example that user is logged in
 export const UserContext = createContext();
+export const UserContextEmail = createContext();
 
 const queryClient = new QueryClient()
 
 export default function App(){
-    const [user, setUser] = useState({ loggedIn: cookies.get('LoggedIn') });
-
+    const [user, setUser] = useState([{ loggedIn: cookies.get('LoggedIn') }, {loggedEmail : cookies.get('email')}]);
  return (
     <UserContext.Provider value={{ user, setUser }}>
     <BrowserRouter>

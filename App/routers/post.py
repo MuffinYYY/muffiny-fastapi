@@ -11,7 +11,8 @@ from fastapi_jwt_auth import AuthJWT
 from fastapi_jwt_auth.exceptions import AuthJWTException
 import os.path, os
 import re
-from sqlalchemy import or_
+from sqlalchemy import or_ 
+import random
 
 router = APIRouter(
     prefix="/posts", #Every time insted of routing /posts/something, we just leave /somtehing and /posts will get added 
@@ -25,10 +26,13 @@ save_amogus = [{"sussy:": "Walt", "baka":"White", "ajusnevarat":"hohoho", "meth"
 async def upload(file: UploadFile, Authorize: AuthJWT = Depends(), db: Session = Depends(get_db)):
 
     Authorize.jwt_required()
+    current_user = Authorize.get_jwt_subject()
+    r1 = random.randint(1, 1094821421)
 
     save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images'
-    name_of_file = file.filename
+    name_of_file = file.filename + str(current_user) + str(r1)
     completeName = os.path.join(save_path, name_of_file)   
+
     findIfPathExists = db.query(models.PostSMTH).filter(or_(name_of_file == models.PostSMTH.path_name, name_of_file == models.User.profile_img_path_name))
     findAllPathExists = findIfPathExists.all()
     findFirstPath = findIfPathExists.first()
@@ -178,10 +182,11 @@ def delete_amogus (id : int, db: Session = Depends(get_db), Authorize: AuthJWT =
     post_query = db.query(models.PostSMTH).filter(models.PostSMTH.id==id)#Query the data based on id
     post_get_first = post_query.first() #Put into variable the queried row
     path_to_remove = db.query(models.PostSMTH.path_name).filter(models.PostSMTH.id==id).first() #We need to find the path name we will be deleting
+    user_role = db.query(models.User).filter( models.User.id == current_user).first()
 
     if not post_get_first: #If the row couldn't be found, that means that post with id was deleted or doesn't exist
         raise HTTPException(status.HTTP_404_NOT_FOUND, detail=f"Post with id {id} not found or was already deleted") #raise exception
-    if post_get_first.owner_id != current_user: #If the user_id in queried row isn't equall to current_user id that's logged in, raise error that action is forbidden
+    if post_get_first.owner_id != current_user and user_role.role != 'admin': #If the user_id in queried row isn't equall to current_user id that's logged in, raise error that action is forbidden
         raise HTTPException(status.HTTP_403_FORBIDDEN, detail=f"Not authorzied to delete")
     deleted_post = post_query.delete(synchronize_session=False) #delete the qureyied post
     db.commit() #Commit changes to database

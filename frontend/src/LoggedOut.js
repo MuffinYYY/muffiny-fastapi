@@ -18,7 +18,8 @@ export default function LoggedOut(){
       credentials: 'include',
     })
     cookies.remove('LoggedIn', { path: '/' }); 
-    setUser({ loggedIn: cookies.get('LoggedIn') }); //useContext set to not logged in, and it will update in our App.js 
+    cookies.remove('email', { path: '/' })
+    setUser([{ loggedIn: cookies.get('LoggedIn') }, {loggedEmail: cookies.get("email")}]); //useContext set to not logged in, and it will update in our App.js
   }
 
   const {mutate} = useMutation(userLogout)
