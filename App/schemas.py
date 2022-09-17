@@ -23,6 +23,7 @@ class ResponseUserCreat(BaseModel): #This is response we expect to get when we c
     email : EmailStr
     created_at : datetime
     profile_img_path_name : Optional[str] = 'profile_default.jpg'
+    role : str
 
     class Config: #This converts SQLalchemy model to be a pydantic model because pydantic model requires dictionaries
         orm_mode = True

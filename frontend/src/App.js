@@ -14,6 +14,7 @@ import Delete from "./delete";
 import Edit from "./Edit"
 import ClickedUser from "./UserClicked";
 import Upload from "./upload";
+import HomeControl from "./HomeControl";
 import {cookies} from "./config"
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
@@ -21,13 +22,18 @@ import { ReactQueryDevtools } from 'react-query/devtools'
 //Allows to manage state globally, we can set from different file for example that user is logged in
 export const UserContext = createContext();
 export const UserContextEmail = createContext();
+export const roleContext = createContext();
 
 const queryClient = new QueryClient()
 
 export default function App(){
-    const [user, setUser] = useState([{ loggedIn: cookies.get('LoggedIn') }, {loggedEmail : cookies.get('email')}]);
+    const [user, setUser] = useState();
+    const [role, setRole] = useState();
+    console.log('user '+user)
+    console.log('role '+role)
  return (
     <UserContext.Provider value={{ user, setUser }}>
+    <roleContext.Provider value={{ role, setRole }}>
     <BrowserRouter>
     
     <div className="App">
@@ -45,12 +51,15 @@ export default function App(){
                     <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
                     <Route path="/user" element={<ClickedUser /> } />
                     <Route path="/upload" element={<Upload/>}/>
+                    
+                    <Route path="/homecontroll" element={cookies.get('LoggedIn') ?  <HomeControl/> :  <Navigate to="/login" replace />}/>
                 </Routes>
                 </Container>
             <ReactQueryDevtools initialIsOpen={false}/>
         </QueryClientProvider>
     </div>
     </BrowserRouter>
+    </roleContext.Provider>
     </UserContext.Provider>
  )
 }

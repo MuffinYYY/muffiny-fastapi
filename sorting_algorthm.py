@@ -108,3 +108,9 @@ class sortingAlgorithms():
 #Call functions
 sorting = sortingAlgorithms(toInt(str(listFromFile())))
 sorting.insertionSort()
+
+import serial
+ser = serial.Serial('COM5')  # open serial port
+print(ser.name)         # check which port was really used
+ser.write(b'hello')     # write a string
+ser.close()      

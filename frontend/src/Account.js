@@ -1,16 +1,18 @@
-import React from "react";
+import React, {useContext} from "react";
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
 import {Link } from 'react-router-dom'
 import { url } from "./config";
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import OwnerInfo from "./OwnerInfo";
+import {roleContext} from "./App"
 import { useQuery } from "react-query";
 
 export default function GetUser(){
-    const getAccountInfo = async() =>{
+    const { role, setRole } = useContext(roleContext);
+
+    const getPostInfo = async() =>{
         const result = await fetch(`${url}/posts/current`, {
             headers: {
                 'Accept': 'application/json',
@@ -20,11 +22,22 @@ export default function GetUser(){
             })
         return result.json()
     }
-    const {data, status} = useQuery('id', getAccountInfo)
-    if(data !== undefined ){
-        if(data[0] !== undefined){
-        }
+    const getAccountInfo = async() =>{
+        const result = await fetch (`${url}/users/current`,{
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
+            credentials: 'include'
+        })
+        if(result.status === 200){
+            setRole('lol'); //Update useContext that will reflect and refresh our App.js
+          }
+        return result.json()
     }
+    const {data, status} = useQuery('id', getPostInfo)
+    const {data : accData} = useQuery('role', getAccountInfo)
+    
 return(
     <div>
     {status === 'error' && (
@@ -34,13 +47,14 @@ return(
     {status === 'loading' && (
         <h1>Loading data...</h1>
     )}
-    {status === 'success' && data !==undefined && data[0] !== undefined &&(
+    {status === 'success' && data !==undefined && data[0] !== undefined&& accData !==undefined &&(
             <Row className="account">
                 <Col className="owner-info-col" md={4}>
                     <OwnerInfo
-                        email = {data[0].PostSMTH.owner.email }
-                        registered_at = {data[0].PostSMTH.owner.created_at}
-                        profile_img = {data[0].PostSMTH.owner.profile_img_path_name}
+                        email = {accData.email }
+                        registered_at = {accData.created_at}
+                        profile_img = {accData.profile_img_path_name}
+                        role = {accData.role}
                     />
                 </Col>
                 <Col className="owner-allposts-col" md>

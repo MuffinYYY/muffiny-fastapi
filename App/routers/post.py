@@ -270,4 +270,4 @@ def update_amogus (id : int, payLoad:schemas.Post, db: Session = Depends(get_db)
     payload_dict['id'] = id #Setting key "id" to be value that is inputed for updating
     save_amogus[index] = payload_dict #Put the updated dictionary in the place in list where the previous unupdated dictionary was
     return {"new data" : save_amogus[index]}
-"""
+"""  
