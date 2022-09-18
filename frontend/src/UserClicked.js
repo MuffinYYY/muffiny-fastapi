@@ -1,23 +1,20 @@
 import React, { useState, useEffect } from "react";
 import Posts from "./Posts";
-import { useLocation, Navigate } from 'react-router-dom';
+import { useLocation, Navigate, useParams } from 'react-router-dom';
 import { url } from "./config";
-import Container from 'react-bootstrap/Container';
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import OwnerInfo from "./OwnerInfo";
 import { useQuery } from "react-query";
 
 export default function ClickedUser(){
-    const location = useLocation();
-    var id
-    if(location.state === null){
-        id = 0
-    }else{
-        id = location.state
-    }
-    console.log("id "+id)
+    let {id} = useParams()
 
+    //If user doesn't exist
+    if (id.match(/[^0-9\-_]/)){
+        id = -1
+    }
+    
     const getAccountInfo = async() =>{
         const result = await fetch(`${url}/posts/${id}`, {
             headers: {
@@ -31,7 +28,6 @@ export default function ClickedUser(){
     const {data, status} = useQuery('postid', getAccountInfo, {
         cacheTime: 1,
       })
-
     return(
         <div>
             {status === 'error' && (
@@ -41,7 +37,7 @@ export default function ClickedUser(){
             {status === 'loading' && (
             <h1>Loading data...</h1>
             )}
-            {status === 'success' && (
+            {status === 'success' && data.detail !=='Not selected user' && (
                 <Row className="account">
                     <Col className="owner-info-col" md={4}>
                         <OwnerInfo
@@ -66,6 +62,9 @@ export default function ClickedUser(){
                     </Col>
                     <Col></Col>
                 </Row>
+            )}
+            {status === 'success' && data.detail ==='Not selected user' && (
+                <h1>User doesn't exist</h1>
             )}
         </div>
     )

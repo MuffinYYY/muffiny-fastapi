@@ -100,6 +100,7 @@ export default function OwnerInfo(props){
     function handleMouseLeave(){
         setIsHover(false)
     }
+    console.log(props.profile_img)
     return(
         <div className="owner-info">
                 <div className="imageBox">
@@ -118,7 +119,7 @@ export default function OwnerInfo(props){
                         <div
                         onMouseEnter = {handleMouseEnter}
                         onMouseLeave = {handleMouseLeave}>
-                            <Card.Img variant="top" src={`images/${props.profile_img}`} className="profile-img" />
+                            <Card.Img variant="top" src={`/images/${props.profile_img}`} className="profile-img" />
                         </div>
                 </div>
                     <Form.Control 

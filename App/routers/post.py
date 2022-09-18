@@ -30,7 +30,7 @@ async def upload(file: UploadFile, Authorize: AuthJWT = Depends(), db: Session =
     r1 = random.randint(1, 1094821421)
 
     save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images'
-    name_of_file = file.filename + str(current_user) + str(r1)
+    name_of_file =  str(current_user) + str(r1)+file.filename
     completeName = os.path.join(save_path, name_of_file)   
 
     findIfPathExists = db.query(models.PostSMTH).filter(or_(name_of_file == models.PostSMTH.path_name, name_of_file == models.User.profile_img_path_name))

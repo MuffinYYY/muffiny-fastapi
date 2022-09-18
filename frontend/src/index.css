@@ -142,3 +142,11 @@ body{
     width: 300px;
     cursor: pointer;
 }
+
+
+/* Not found styling */
+
+.notfound{
+    text-align: center;
+    color: red;
+}

@@ -15,6 +15,7 @@ import Edit from "./Edit"
 import ClickedUser from "./UserClicked";
 import Upload from "./upload";
 import HomeControl from "./HomeControl";
+import NotFound from "./NotFound";
 import {cookies} from "./config"
 import { QueryClient, QueryClientProvider, useQuery } from 'react-query'
 import { ReactQueryDevtools } from 'react-query/devtools'
@@ -29,8 +30,6 @@ const queryClient = new QueryClient()
 export default function App(){
     const [user, setUser] = useState();
     const [role, setRole] = useState();
-    console.log('user '+user)
-    console.log('role '+role)
  return (
     <UserContext.Provider value={{ user, setUser }}>
     <roleContext.Provider value={{ role, setRole }}>
@@ -51,7 +50,11 @@ export default function App(){
                     <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
                     <Route path="/user" element={<ClickedUser /> } />
                     <Route path="/upload" element={<Upload/>}/>
-                    
+                    <Route path="*" element={<NotFound />} />
+
+                    <Route path="/homecontroll/:id" element={<HomeControl /> } />
+                    <Route path={`/user/:id`} element={<ClickedUser /> } />
+
                     <Route path="/homecontroll" element={cookies.get('LoggedIn') ?  <HomeControl/> :  <Navigate to="/login" replace />}/>
                 </Routes>
                 </Container>

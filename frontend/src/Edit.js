@@ -63,13 +63,13 @@ export default function Edit(){
 
     //When submmit button clicked set clicked state to true so that fetch api's can start to work
     function handleSubmit() {
+        console.log("Handeling submit")
         mutate()
     }
 
     //Make uploaded file as formdata only when it's uploaded otherwise we will use last image
     const formData = new FormData()
     formData.append('file', File[0])
-    console.log(File[0])
 
     const uploadFile = async () => {
         if (File[0] !== undefined){
@@ -79,6 +79,10 @@ export default function Edit(){
             body: formData
             })
             const data = await result.json()
+
+            return data
+        } else if (File[0] === undefined){
+            const data = forms.path_name
 
             return data
         }
@@ -105,7 +109,6 @@ export default function Edit(){
     
     const { mutate } = useMutation(uploadFile, {
         onSuccess: (data) => {
-            console.log(data)
             mutateAsync(data)
           }
 

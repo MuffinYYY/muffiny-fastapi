@@ -15,7 +15,7 @@ export default function Posts(props){
       navigate(`/account`);
     }
     const routeChangeUser = () =>{ 
-        navigate(`/user`, {state:props.ownerid});
+        navigate(`/user/${props.ownerid}`);
     }
 
     //Allows us to persist the same like value between rerenders
@@ -87,7 +87,7 @@ export default function Posts(props){
             </>
             :
             <>
-                <Card.Img variant="top" src={`images/${props.path_name}`} className="card-img"/>
+                <Card.Img variant="top" src={`/images/${props.path_name}`} className="card-img"/>
                 <h1 className="post-card-title" >{props.title}</h1>
             </>
              } 
