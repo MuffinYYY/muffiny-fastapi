@@ -11,14 +11,14 @@ export default function NavbarCustom(){
   return(
       <Navbar expand="md py-3" variant="light" bg="light">
       <Container fluid>
-        <Navbar.Brand className="navbar-brand" href="/">Home</Navbar.Brand>
+        <Navbar.Brand className="navbar-brand"> <Link style={navElementStyle} to="/">Home</Link></Navbar.Brand>
         <Nav>
           {cookies.get('LoggedIn') ? "" : <Link style={navElementStyle} to="/Login">Login</Link>}
           {cookies.get('LoggedIn') ? <Link style={navElementStyle} to="/Logout">Logout</Link> : ""}
           {cookies.get('LoggedIn') ? "" : <Link style={navElementStyle} to="/createAccount">CreateAccount</Link>}
           <Link style={navElementStyle} to="/PostSomething">PostSomething</Link>
           {cookies.get('LoggedIn') ?<Link style={navElementStyle} to="/Account">Account</Link>: ""}
-          <Link style={navElementStyle} to="/homecontroll/1">Test</Link>
+          <Link style={navElementStyle} to="/homecontroll">Test</Link>
         </Nav>
       </Container>
     </Navbar>

@@ -8,12 +8,17 @@ export default function AllPosts(){
 
     //Getting all posts
     const getAllPosts = async () =>{
-        const res = await fetch(`${url}/posts/all`, {
+        const result = await fetch(`${url}/posts/all`, {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json'
+            },
             credentials: 'include'})
-        return res.json()
+        return result.json()
     }
-    const {data, status} =  useQuery('id', getAllPosts)
 
+    const {data, status, isLoading, isFetching} =  useQuery('allposts', getAllPosts)
+    
     function dateFormat(posted_at){
         const formated_time = posted_at.replace(/[\-]/g,'/').replace(/[T]/g, ' ').slice(0, -13) + ' '
         return formated_time

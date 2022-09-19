@@ -30,6 +30,7 @@ const queryClient = new QueryClient()
 export default function App(){
     const [user, setUser] = useState();
     const [role, setRole] = useState();
+    console.log("rendering app")
  return (
     <UserContext.Provider value={{ user, setUser }}>
     <roleContext.Provider value={{ role, setRole }}>
@@ -48,7 +49,6 @@ export default function App(){
                     <Route path="/Account" element={cookies.get('LoggedIn') ?  <GetUser/> :  <Navigate to="/login" replace />} />
                     <Route path="/delete" element={cookies.get('LoggedIn') ?  <Delete/> :  <Navigate to="/login" replace /> } />
                     <Route path="/edit" element={cookies.get('LoggedIn') ?  <Edit/> :  <Navigate to="/login" replace /> } />
-                    <Route path="/user" element={<ClickedUser /> } />
                     <Route path="/upload" element={<Upload/>}/>
                     <Route path="*" element={<NotFound />} />
 

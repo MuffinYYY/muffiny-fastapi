@@ -1,16 +1,23 @@
-import React, {useContext} from "react";
+import React, {useContext, useEffect} from "react";
 import Posts from './Posts'
 import Button from 'react-bootstrap/Button';
 import {Link } from 'react-router-dom'
-import { url } from "./config";
+import { cookies, url } from "./config";
 import Row from 'react-bootstrap/Row';
 import Col from 'react-bootstrap/Col';
 import OwnerInfo from "./OwnerInfo";
 import {roleContext} from "./App"
 import { useQuery } from "react-query";
+import { useNavigate } from "react-router-dom";
 
 export default function GetUser(){
     const { role, setRole } = useContext(roleContext);
+
+    let navigate = useNavigate(); 
+
+    const routeChangeLogin = () =>{ 
+      navigate(`/login`);
+    }
 
     const getPostInfo = async() =>{
         const result = await fetch(`${url}/posts/current`, {
@@ -32,12 +39,14 @@ export default function GetUser(){
         })
         if(result.status === 200){
             setRole('lol'); //Update useContext that will reflect and refresh our App.js
-          }
+        }
         return result.json()
     }
     const {data, status} = useQuery('id', getPostInfo)
     const {data : accData} = useQuery('role', getAccountInfo)
     
+    console.log(data)
+
 return(
     <div>
     {status === 'error' && (
@@ -47,7 +56,7 @@ return(
     {status === 'loading' && (
         <h1>Loading data...</h1>
     )}
-    {status === 'success' && data !==undefined && data[0] !== undefined&& accData !==undefined &&(
+    {status === 'success' && data !==undefined && data[0] !== undefined&& accData !==undefined && cookies.get('LoggedIn') &&(
             <Row className="account">
                 <Col className="owner-info-col" md={4}>
                     <OwnerInfo

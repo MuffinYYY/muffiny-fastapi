@@ -150,3 +150,9 @@ body{
     text-align: center;
     color: red;
 }
+
+
+/* Styling for testing */
+h1{
+    color: white;
+}

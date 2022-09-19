@@ -100,7 +100,6 @@ export default function OwnerInfo(props){
     function handleMouseLeave(){
         setIsHover(false)
     }
-    console.log(props.profile_img)
     return(
         <div className="owner-info">
                 <div className="imageBox">

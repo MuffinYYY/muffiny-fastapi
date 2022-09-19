@@ -40,7 +40,7 @@ def login(loginpost: schemas.UserLogin, Authorize: AuthJWT = Depends(), db: Sess
     #if the email and password match we need to create a token and return token
 
     # subject identifier for who this token is for example id or username from database
-    access_token = Authorize.create_access_token(subject=user.id)
+    access_token = Authorize.create_access_token(subject=user.id,expires_time=10)
     refresh_token = Authorize.create_refresh_token(subject=user.id)
 
     # Set the JWT cookies in the response

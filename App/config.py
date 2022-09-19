@@ -19,7 +19,7 @@ class Setting(BaseSettings):
     authjwt_secret_key: str 
     authjwt_cookie_samesite: str = 'none' #Needed to set cookies in browser
     authjwt_cookie_secure : bool = "true" #Needed to set cookies in browser
-    authjwt_cookie_max_age : int = 1000 # In seconds
+    authjwt_cookie_max_age : int = 10 # In seconds
     authjwt_denylist_enabled: bool = True
     authjwt_denylist_token_checks: set = {"access","refresh"}
     
