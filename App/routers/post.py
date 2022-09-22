@@ -29,7 +29,8 @@ async def upload(file: UploadFile, Authorize: AuthJWT = Depends(), db: Session =
     current_user = Authorize.get_jwt_subject()
     r1 = random.randint(1, 1094821421)
 
-    save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images'
+    #save_path = 'C:\\Users\\muffi\\Desktop\\Python projects\\frontend\\public\\images' 
+    save_path = 'C:\\Users\\muffi\\github reps\\muffiny-fastapi\\frontend\\public\\images'
     name_of_file =  str(current_user) + str(r1)+file.filename
     completeName = os.path.join(save_path, name_of_file)   
 

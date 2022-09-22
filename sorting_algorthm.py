@@ -1,4 +1,4 @@
-import numpy as np
+# import numpy as np
 
 #Create list from file
 def listFromFile():
@@ -102,15 +102,9 @@ class sortingAlgorithms():
 
     #Sorting with numPy
     def numpySort(self):
-        print(np.sort(self.listSort))
+    #    print(np.sort(self.listSort))
         return self.listSort
 
 #Call functions
 sorting = sortingAlgorithms(toInt(str(listFromFile())))
 sorting.insertionSort()
-
-import serial
-ser = serial.Serial('COM5')  # open serial port
-print(ser.name)         # check which port was really used
-ser.write(b'hello')     # write a string
-ser.close()      

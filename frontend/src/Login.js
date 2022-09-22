@@ -45,8 +45,8 @@ export default function LoginHandle() {
       body: JSON.stringify(forms)
     })
     if(result.status === 200){
-      cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+10000)});
-      cookies.set('email', forms.email, { path: '/', expires: new Date(Date.now()+10000)});
+      cookies.set('LoggedIn', true, { path: '/', expires: new Date(Date.now()+1000000)});
+      cookies.set('email', forms.email, { path: '/', expires: new Date(Date.now()+1000000)});
       setUser([{ loggedIn: true },{loggedEmail : forms.email}]); //Update useContext that will reflect and refresh our App.js
     }
     return result.status
