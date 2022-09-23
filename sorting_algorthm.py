@@ -1,8 +1,9 @@
-# import numpy as np
+import numpy as np
 
 #Create list from file
 def listFromFile():
-    f = open("C:\\Users\\muffi\\Desktop\\Python projects\\randnumber.txt")
+    #f = open("C:\\Users\\muffi\\Desktop\\Python projects\\randnumber.txt") #Desktop
+    f = open("C:\\Users\\muffi\\github reps\\muffiny-fastapi\\randnumber.txt") #Laptop
     listOriginal = []
     for i in f:
         listOriginal.append(i)
@@ -40,7 +41,7 @@ def toInt(listOriginal):
                             break      
                     i = i+1
         j = j+1
-    print("Unsorted :")
+    print("Unsorted array:")
     print(third_list) #Print unsorted list
     return third_list #Return list with only remaining int's
 
@@ -100,9 +101,9 @@ class sortingAlgorithms():
         print(self.listSort)
         return self.listSort
 
-    #Sorting with numPy
+    #Sorting with numPy module
     def numpySort(self):
-    #    print(np.sort(self.listSort))
+        print(np.sort(self.listSort))
         return self.listSort
 
 #Call functions
