@@ -41,7 +41,7 @@ async def websocket_endpoint(websocket: WebSocket, Authorize: AuthJWT = Depends(
             await websocket.send_text("Failed to establish backend connection with serial device!")
     while True:
         try:
-            await asyncio.sleep(0.05)
+            await asyncio.sleep(0.01)
             x = ser.readline().decode('utf')
             await websocket.send_text(x)
         except Exception as e:

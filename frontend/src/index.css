@@ -151,8 +151,12 @@ body{
     color: red;
 }
 
+/* Styling for serial communication page */
 
-/* Styling for testing */
-h1{
+.serialBox{
     color: white;
+    background-color: black;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
