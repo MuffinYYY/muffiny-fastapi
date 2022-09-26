@@ -15,6 +15,7 @@ export default function HomeControl(){
     }
 
     const [responseCode, setResponseCode] = useState()
+    const [test, setTest] = useState()
 
     const getAccountInfo = async() =>{
         const result = await fetch (`${url}/users/current`,{
@@ -54,13 +55,14 @@ export default function HomeControl(){
     useEffect(() => {
         const ws = new WebSocket("ws://127.0.0.1:8000/serial/ws");
         ws.onopen = () => {
-        console.log("Connection Established!")
+        console.log("WebPage Connection Established!")
         }
 
         ws.onmessage = (event) => {
-            console.log(event.data)
+            const message = event.data;
+            console.log(message)
         }
-
+        return () => ws.close();
     }, [])
     
 return(
@@ -71,14 +73,14 @@ return(
         {status === 'success' && responseCode !== 503 &&(
             <>
                 <h1>Logged in privilages: {role.role}</h1>
-                <h1>Port number: {serial.name}</h1>
+                <h1>Port number: {serial}</h1>
             </>
         )
         }
         {status === 'success' && responseCode === 503 &&(
             <>
                 <h1>Logged in privilages: {role.role}</h1>
-                <h1>Failed to establish serial connection</h1>
+                <h1>Failed to establish serial connection {test}</h1>
             </>
         )
         }

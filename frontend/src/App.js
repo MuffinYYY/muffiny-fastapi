@@ -30,7 +30,6 @@ const queryClient = new QueryClient()
 export default function App(){
     const [user, setUser] = useState();
     const [role, setRole] = useState();
-    console.log("rendering app")
  return (
     <UserContext.Provider value={{ user, setUser }}>
     <roleContext.Provider value={{ role, setRole }}>
