@@ -16,6 +16,7 @@ export default function HomeControl(){
 
     const [responseCode, setResponseCode] = useState()
     const [message, setMessage] = useState()
+    const [time, setTime] = useState()
 
     const getAccountInfo = async() =>{
         const result = await fetch (`${url}/users/current`,{
@@ -51,7 +52,6 @@ export default function HomeControl(){
         enabled: !!role && role.role === 'admin' //Doesn't run getSerial query until first query is finished and role is equall to admin
     })
 
-    var ws= null
     useEffect(() => {
         const ws = new WebSocket(`ws://127.0.0.1:8000/serial/ws`);
         ws.onopen = () => {
@@ -61,6 +61,9 @@ export default function HomeControl(){
         ws.onmessage = (event) => {
             const message = event.data;
             setMessage(message)
+            const d = new Date();
+            let timeUNIX = d.getTime();
+            setTime(timeUNIX)
         }
         return () => ws.close();
     }, [])
@@ -74,7 +77,9 @@ return(
             <>
                 <h1>Logged in privilages: {role.role}</h1>
                 <h1>Port number: {serial}</h1>
+                <h1>Current UNIX time : {time}</h1>
                 <h1>Serial data: {message}</h1>
+                <h1>Value squared: {message * message}</h1>
             </>
         )
         }
