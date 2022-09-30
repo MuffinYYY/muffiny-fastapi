@@ -75,11 +75,7 @@ return(
         )}
         {status === 'success' && responseCode !== 503 &&(
             <>
-                <h1>Logged in privilages: {role.role}</h1>
-                <h1>Port number: {serial}</h1>
-                <h1>Current UNIX time : {time}</h1>
-                <h1>Serial data: {message}</h1>
-                <h1>Value squared: {message * message}</h1>
+
             </>
         )
         }
