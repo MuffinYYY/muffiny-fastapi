@@ -15,7 +15,7 @@ export default function HomeControl(){
     }
 
     const [responseCode, setResponseCode] = useState()
-    const [message, setMessage] = useState()
+    const [message, setMessage] = useState("")
     const [time, setTime] = useState()
 
     const getAccountInfo = async() =>{
@@ -68,6 +68,18 @@ export default function HomeControl(){
         return () => ws.close();
     }, [])
     
+    function FormatData(){
+        const str = message
+        const result = str.split(/[,]+/)
+
+        const map1 = result.map(item => {
+            return(
+                <h1 key={item}>{item}</h1>
+            )
+        })
+        return map1
+    }
+
 return(
     <div className="serialBox">
         {status === 'loading' && (
@@ -75,7 +87,8 @@ return(
         )}
         {status === 'success' && responseCode !== 503 &&(
             <>
-
+                <h1>Logged in privilages: {role.role}</h1>
+                {FormatData()}
             </>
         )
         }

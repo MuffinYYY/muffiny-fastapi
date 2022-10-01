@@ -21,6 +21,7 @@ def get_current_user(Authorize: AuthJWT = Depends()):
     ser = serial.Serial()
     ser.baudrate = 115200
     ser.port = 'COM8'
+    ser.timeout=None
     return ser.name
 
 @router.websocket("/ws")
@@ -35,16 +36,15 @@ async def websocket_endpoint(websocket: WebSocket, Authorize: AuthJWT = Depends(
     if ser.is_open == False:
         ser.baudrate = 115200
         ser.port = 'COM8'
+        ser.timeout=None
         try:
             ser.open()
         except:
             await websocket.send_text("Failed to establish backend connection with serial device!")
     while True:
         try:
-            await asyncio.sleep(0.01)
-            bytesToRead = ser.inWaiting()
-            x = ser.read(bytesToRead)
-            print(x)
+            await asyncio.sleep(0)
+            x = ser.readline().decode('utf')
             await websocket.send_text(x)
         except Exception as e:
             print('error:', e)
