@@ -5,6 +5,7 @@ import { cookies,url } from "./config";
 import { useQuery } from "react-query";
 import { QueryCache } from 'react-query'
 import { useNavigate } from "react-router-dom";
+import Button from 'react-bootstrap/Button';
 
 export default function HomeControl(){
 
@@ -80,23 +81,43 @@ export default function HomeControl(){
         return map1
     }
 
+    const [ledState, setLedState] = useState(false)
+
+        const changeLed = async() =>{
+            const result = await fetch (`http://192.168.8.51/led/${ledState}`)
+            return result.json()
+        }
+        const {data : espdata, refetch} = useQuery('esp', changeLed, {
+            refetchOnWindowFocus: false,
+            enabled: false // disable this query from automatically running
+          })
+    
+    function toggleLED(){
+        console.log(ledState)
+        setLedState(!ledState)
+        refetch();
+    }
+
 return(
-    <div className="serialBox">
+    <div className="dataBox">
+        <div className="controlBox">
+            <Button variant="info" onClick={toggleLED}>Toggle LED: {ledState ? "Off": "On"}</Button>
+        </div>
         {status === 'loading' && (
             <h1>Loading data...</h1>
         )}
         {status === 'success' && responseCode !== 503 &&(
-            <>
+            <div className="serialBox">
                 <h1>Logged in privilages: {role.role}</h1>
                 {FormatData()}
-            </>
+            </div>
         )
         }
         {status === 'success' && responseCode === 503 &&(
-            <>
+            <div className="serialBox">
                 <h1>Logged in privilages: {role.role}</h1>
                 <h1>Failed to establish serial connection </h1>
-            </>
+            </div>
         )
         }
     </div>
