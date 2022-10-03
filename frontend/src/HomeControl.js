@@ -6,6 +6,7 @@ import { useQuery } from "react-query";
 import { QueryCache } from 'react-query'
 import { useNavigate } from "react-router-dom";
 import Button from 'react-bootstrap/Button';
+import Card from 'react-bootstrap/Card';
 
 export default function HomeControl(){
 
@@ -62,6 +63,7 @@ export default function HomeControl(){
         ws.onmessage = (event) => {
             const message = event.data;
             setMessage(message)
+            //setMessage(JSON.parse(message)) //Parsing to JSON serial data
             const d = new Date();
             let timeUNIX = d.getTime();
             setTime(timeUNIX)
@@ -81,27 +83,31 @@ export default function HomeControl(){
         return map1
     }
 
-    const [ledState, setLedState] = useState(false)
+    const [ledState, setLedState] = useState('current')
 
-        const changeLed = async() =>{
-            const result = await fetch (`http://192.168.8.51/led/${ledState}`)
-            return result.json()
-        }
-        const {data : espdata, refetch} = useQuery('esp', changeLed, {
-            refetchOnWindowFocus: false,
-            enabled: false // disable this query from automatically running
-          })
-    
+    const changeLed = async() =>{
+        const result = await fetch (`http://192.168.8.51/led/${ledState}`)
+        return result.json()
+    }
+    const {data : espdata, refetch, isFetching} = useQuery(['esp', ledState], changeLed, {
+        refetchOnWindowFocus: false,
+        })
+
     function toggleLED(){
-        console.log(ledState)
-        setLedState(!ledState)
-        refetch();
+        if(espdata.LED_state === 'true'){
+            setLedState(false)
+        }
+        if(espdata.LED_state === 'false'){
+            setLedState(true)
+        }
+        refetch()
     }
 
 return(
     <div className="dataBox">
         <div className="controlBox">
-            <Button variant="info" onClick={toggleLED}>Toggle LED: {ledState ? "Off": "On"}</Button>
+            <h1>Control LED</h1>
+            <img className="ledButton" onClick={toggleLED} src={ledState ? "../led-on.png" : "../led-off.png"} ></img>
         </div>
         {status === 'loading' && (
             <h1>Loading data...</h1>

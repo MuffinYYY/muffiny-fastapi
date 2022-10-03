@@ -96,7 +96,7 @@ return(
                                             path_name: item.PostSMTH.path_name
                                             }}
                                         >
-                                            <Button variant="info" >Edit post lol</Button>
+                                            <Button variant="info" >Edit post</Button>
                                         </Link>
                                     }
                                 />
