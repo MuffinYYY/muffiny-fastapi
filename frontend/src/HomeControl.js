@@ -18,7 +18,6 @@ export default function HomeControl(){
 
     const [responseCode, setResponseCode] = useState()
     const [message, setMessage] = useState("")
-    const [time, setTime] = useState()
 
     const getAccountInfo = async() =>{
         const result = await fetch (`${url}/users/current`,{
@@ -62,26 +61,10 @@ export default function HomeControl(){
 
         ws.onmessage = (event) => {
             const message = event.data;
-            setMessage(message)
-            //setMessage(JSON.parse(message)) //Parsing to JSON serial data
-            const d = new Date();
-            let timeUNIX = d.getTime();
-            setTime(timeUNIX)
+            setMessage(JSON.parse(message)) //Parsing to JSON serial data
         }
         return () => ws.close();
     }, [])
-    
-    function FormatData(){
-        const str = message
-        const result = str.split(/[,]+/)
-
-        const map1 = result.map(item => {
-            return(
-                <h1 key={item}>{item}</h1>
-            )
-        })
-        return map1
-    }
 
     const [ledState, setLedState] = useState('current')
 
@@ -115,7 +98,11 @@ return(
         {status === 'success' && responseCode !== 503 &&(
             <div className="serialBox">
                 <h1>Logged in privilages: {role.role}</h1>
-                {FormatData()}
+                <h3>Current battery voltage: {message.voltage} V</h3>
+                <h3>Current altitude: {message.altitude} m</h3>
+                <h3>Pitch: {message.pitch}</h3>
+                <h3>Roll: {message.roll}</h3>
+                <h3>Yaw: {message.yaw}</h3>
             </div>
         )
         }

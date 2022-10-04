@@ -47,6 +47,7 @@ async def websocket_endpoint(websocket: WebSocket, Authorize: AuthJWT = Depends(
             x = ser.readline().decode('utf')
             await websocket.send_text(x)
         except Exception as e:
+            await websocket.close()
             print('error:', e)
             ser.close()
             break
